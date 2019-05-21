@@ -1,5 +1,5 @@
 ﻿<Properties StartupConfiguration="{7D55FE85-BD7F-7ABF-C505-CB0F5B0A0B64}|">
-  <MonoDevelop.Ide.Workbench ActiveDocument=".gitignore">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Editor/BufferObjectWindowScripts/BufferObjectWindow.cs">
     <Files>
       <File FileName="Assets/Editor/EditorTool/SceneValidatorWindow.cs" Line="98" Column="60" />
       <File FileName="Assets/Editor/EditorTool/SceneValidatorDrawing.cs" Line="57" Column="4" />
@@ -8,8 +8,7 @@
       <File FileName="Assets/Editor/ContentSceneValidationRules.cs" Line="1" Column="1" />
       <File FileName="Assets/Helper/SceneHelper.cs" Line="1" Column="1" />
       <File FileName="Assets/Editor/BufferObjectWindowScripts/AutocompleteSearchField.cs" Line="78" Column="52" />
-      <File FileName="Assets/Editor/BufferObjectWindowScripts/BufferObjectWindow.cs" Line="299" Column="15" />
-      <File FileName=".gitignore" Line="26" Column="5" />
+      <File FileName="Assets/Editor/BufferObjectWindowScripts/BufferObjectWindow.cs" Line="258" Column="11" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">

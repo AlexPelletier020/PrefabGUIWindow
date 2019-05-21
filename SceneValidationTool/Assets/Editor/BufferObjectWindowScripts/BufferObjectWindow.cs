@@ -12,20 +12,18 @@ using UnityEditor.IMGUI.Controls;
 
 public class BufferObjectWindow : EditorWindow
 {
-    private const string CrossIconPath = "cross";
-    private const string CheckIconPath = "check";
-    private const string QuestionIconPath = "warning";
-    private const string BlueSquare = "blueSquare";
-    private const string PrefabIcon = "PrefabIcon";
+    private const string CROSS_ICON_PATH = "cross";
+    private const string CHECK_ICON_PATH = "check";
+    private const string BLUE_SQUARE = "blueSquare";
+    private const string PREFAB_ICON = "PrefabIcon";
 
     private int choice = 0;                                                                             // Drop down menu integer user choice for sorting.
     private string[] choices = new string[] { "Alphabetical", "Unalphabetical" };                       // List of items in drop down menu.
-
-    private static GameObject selectedGameObject = null;                                                       // Game Object selected by user.
-
+    private static GameObject selectedGameObject = null;                                                // Game Object selected by user.
     List<GameObject> listOfUpdateObjects = new List<GameObject>();                                      // List of prefabs that are being updated when the button update all is pressed.
-
-    static String searchInput = "";                                                                            // Search input string variable used to define the search.
+    static String searchInput = "";                                                                     // Search input string variable used to define the search.
+    [SerializeField]
+    static AutocompleteSearchField.AutocompleteSearchField searchField;                                 // Create a searchField bar.
 
     [MenuItem("Buffered/Update Buffer Objects")]
     static void Init()                                                                                  //Initialize the window creation for Editor Window
@@ -34,9 +32,6 @@ public class BufferObjectWindow : EditorWindow
 
         window.Show();                                                                                  // Show the window
     }
-
-    [SerializeField]
-    static AutocompleteSearchField.AutocompleteSearchField searchField;                                        // Create a searchField bar.
 
     void OnEnable()
     {
@@ -57,7 +52,7 @@ public class BufferObjectWindow : EditorWindow
         }
     }
 
-    void YourCallback()
+    void RightClick()
     {
         searchField.searchString = selectedGameObject.name; 
         searchInput = selectedGameObject.name.ToUpper();
@@ -87,44 +82,29 @@ public class BufferObjectWindow : EditorWindow
 
         List<GameObject> listOfProjectPrefabs = CreateList();                                           // Repopulate the list by calling CreateList method.
 
-        if (choice == 0)                                                                                // Sort the list alphabetically
-        {
-            listOfProjectPrefabs = listOfProjectPrefabs.OrderBy(obj => obj.name).ToList();
-        }
-        else                                                                                            // Or sort the list Unalphabetically
-        {
-            listOfProjectPrefabs = listOfProjectPrefabs.OrderByDescending(obj => obj.name).ToList();
-        }
+        listOfProjectPrefabs = Sort(listOfProjectPrefabs);
 
         EditorGUILayout.BeginVertical();
 
-        using (new GUILayout.HorizontalScope(EditorStyles.helpBox))                                     // Put each Prefab in the list inside of it's own horizontal help box
+        DrawSearchBar();
+
+        DrawScrollingSection(listOfProjectPrefabs);
+
+        DrawTextBox();
+
+        DrawUpdateButtons();
+
+        EditorGUILayout.EndVertical();
+
+        if (e.type == EventType.MouseDown && e.button == 0)                                             // Check for left mouse click if off the screen, or trying to unselect.
         {
-            searchField.OnGUI();
-            choice = EditorGUILayout.Popup(choice, choices, GUILayout.MaxWidth(200));
+            selectedGameObject = null;
+            Init();
         }
+    }
 
-        var scrollControlID = GUIUtility.GetControlID(FocusType.Passive);                               // Add Scrolling to the window
-        var scrollState = (ScrollState)GUIUtility.GetStateObject(typeof(ScrollState), scrollControlID);
-
-        using (var scrollView = new GUILayout.ScrollViewScope(scrollState.scrollPosition))              // Scrolling section of the window.
-        {
-            scrollState.scrollPosition = scrollView.scrollPosition;
-
-            DrawList(listOfProjectPrefabs);
-        }
-
-
-        GUILayout.FlexibleSpace();                                                                      // Add some white space until the bottom of the window
-
-        using (new GUILayout.HorizontalScope(EditorStyles.helpBox))                                     // Put each Prefab in the list inside of it's own horizontal help box
-        {
-            if (selectedGameObject != null)
-            {
-                DrawText("Enter Problem Here For: " + selectedGameObject.name);
-            }
-        }
-
+    private void DrawUpdateButtons()
+    {
         using (new GUILayout.HorizontalScope(EditorStyles.helpBox))                                     // Put each Prefab in the list inside of it's own horizontal help box
         {
             if (selectedGameObject != null)
@@ -142,13 +122,56 @@ public class BufferObjectWindow : EditorWindow
                 }
             }
         }
+    }
 
-        EditorGUILayout.EndVertical();
+    private void DrawTextBox()
+    {
+        GUILayout.FlexibleSpace();                                                                      // Add some white space until the bottom of the window
 
-        if (e.type == EventType.MouseDown && e.button == 0)                                             // Check for left mouse click if off the screen, or trying to unselect.
+        using (new GUILayout.HorizontalScope(EditorStyles.helpBox))                                     // Put each Prefab in the list inside of it's own horizontal help box
         {
-            selectedGameObject = null;
+            if (selectedGameObject != null)
+            {
+                DrawText("Enter Problem Here For: " + selectedGameObject.name);
+            }
         }
+    }
+
+    private void DrawScrollingSection(List<GameObject> list)
+    {
+        var scrollControlID = GUIUtility.GetControlID(FocusType.Passive);                               // Add Scrolling to the window
+        var scrollState = (ScrollState)GUIUtility.GetStateObject(typeof(ScrollState), scrollControlID);
+
+        using (var scrollView = new GUILayout.ScrollViewScope(scrollState.scrollPosition))              // Scrolling section of the window.
+        {
+            scrollState.scrollPosition = scrollView.scrollPosition;
+
+            DrawList(list);
+        }
+
+    }
+
+    private void DrawSearchBar()
+    {
+        using (new GUILayout.HorizontalScope(EditorStyles.helpBox))                                     // Put each Prefab in the list inside of it's own horizontal help box
+        {
+            searchField.OnGUI();
+            choice = EditorGUILayout.Popup(choice, choices, GUILayout.MaxWidth(200));
+        }
+    }
+
+    private List<GameObject> Sort(List<GameObject> list)
+    {
+        if (choice == 0)                                                                                // Sort the list alphabetically
+        {
+            list = list.OrderBy(obj => obj.name).ToList();
+        }
+        else                                                                                            // Or sort the list Unalphabetically
+        {
+            list = list.OrderByDescending(obj => obj.name).ToList();
+        }
+
+        return list;
     }
 
     private List<GameObject> CreateList()
@@ -196,14 +219,14 @@ public class BufferObjectWindow : EditorWindow
                 GUIStyle GetBtnStyleSelected()                                                          // Method for styling selected buttons to have a blue background
                 {
                     GUIStyle s = new GUIStyle();
-                    s.normal.background = Resources.Load(BlueSquare, typeof(Texture2D)) as Texture2D;
+                    s.normal.background = Resources.Load(BLUE_SQUARE, typeof(Texture2D)) as Texture2D;
 
                     return s;
                 }
 
                 var rectPrefab = GUILayoutUtility.GetRect(15f, 15f, GUILayout.ExpandWidth(false));      // Rectangle for the prefab icon.
 
-                DrawIcon(rectPrefab, PrefabIcon);                                                       // Draw the prefab icon
+                DrawIcon(rectPrefab, PREFAB_ICON);                                                       // Draw the prefab icon
                 DrawButton(obj, selected);                                                              // Draw the button with the obj name as a label.
 
                 var rectIcon = GUILayoutUtility.GetRect(15f, 15f, GUILayout.ExpandWidth(false));        // Rectangle for the check or cross icon
@@ -211,10 +234,10 @@ public class BufferObjectWindow : EditorWindow
                 switch (CheckIfValid(obj))                                                              // Check if the obj is valid or not, then draws the coresponding icon
                 {
                     case (int)ValidationResult.Success:
-                        DrawIcon(rectIcon, CheckIconPath);                                              // Draw check mark icon
+                        DrawIcon(rectIcon, CHECK_ICON_PATH);                                              // Draw check mark icon
                         break;
                     case (int)ValidationResult.Fail:
-                        DrawIcon(rectIcon, CrossIconPath);                                              // Draw cross Icon
+                        DrawIcon(rectIcon, CROSS_ICON_PATH);                                              // Draw cross Icon
                         break;
                 }
 
@@ -229,7 +252,7 @@ public class BufferObjectWindow : EditorWindow
         {
             GenericMenu menu = new GenericMenu();
 
-            menu.AddItem(new GUIContent("Search For:"), false, YourCallback);                            // Add menu item to right click menu, which calls the method YourCallBack.
+            menu.AddItem(new GUIContent("Search For:"), false, RightClick);                            // Add menu item to right click menu, which calls the method YourCallBack.
             menu.ShowAsContext();
 
             e.Use();
@@ -296,7 +319,12 @@ public class BufferObjectWindow : EditorWindow
                 wordWrap = true,
             };
 
-            //s.normal.textColor = Color.black;                                                           // Set text color to black when not selected
+            if (EditorGUIUtility.isProSkin)
+            {
+                s.normal.textColor = Color.white;                                                           // Set text color to white when not selected
+
+                return s;
+            }
 
             return s;
         }
