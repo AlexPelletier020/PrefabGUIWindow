@@ -16,14 +16,14 @@ public class BufferObjectWindow : EditorWindow
     private const string CHECK_ICON_PATH = "check";
     private const string BLUE_SQUARE = "blueSquare";
     private const string PREFAB_ICON = "PrefabIcon";
+    private const string FILE_EXTENSION = ".prefab";
 
     private int choice = 0;                                                                             // Drop down menu integer user choice for sorting.
-    private string[] choices = new string[] { "Alphabetical", "Unalphabetical" };                       // List of items in drop down menu.
+    private string[] choices = new string[] { "Alphabetical", "Unalphabetical" };                       // List of items in drop down menu.    
+    private static String searchInput = "";                                                             // Search input string variable used to define the search.
     private static GameObject selectedGameObject = null;                                                // Game Object selected by user.
     List<GameObject> listOfUpdateObjects = new List<GameObject>();                                      // List of prefabs that are being updated when the button update all is pressed.
-    static String searchInput = "";                                                                     // Search input string variable used to define the search.
-    [SerializeField]
-    static AutocompleteSearchField.AutocompleteSearchField searchField;                                 // Create a searchField bar.
+    private static AutocompleteSearchField.AutocompleteSearchField searchField;                         // Create a searchField bar.
 
     [MenuItem("Buffered/Update Buffer Objects")]
     static void Init()                                                                                  //Initialize the window creation for Editor Window
@@ -35,7 +35,10 @@ public class BufferObjectWindow : EditorWindow
 
     void OnEnable()
     {
-        if (searchField == null) searchField = new AutocompleteSearchField.AutocompleteSearchField();
+        if (searchField == null)
+        {
+            searchField = new AutocompleteSearchField.AutocompleteSearchField();
+        }
         searchField.onInputChanged = OnInputChanged;
     }
 
@@ -45,11 +48,9 @@ public class BufferObjectWindow : EditorWindow
         if (!string.IsNullOrEmpty(searchString))
         {
             searchInput = searchString.ToUpper();                                                       // Set the string search input equal to the user input case insensitive by making all upper case.
+            return;
         }
-        else
-        {
-            searchInput = "";                                                                           // Set string search input to blank if nothing is in the bar.
-        }
+        searchInput = "";                                                                               // Set string search input to blank if nothing is in the bar
     }
 
     void RightClick()
@@ -63,7 +64,7 @@ public class BufferObjectWindow : EditorWindow
     {
         GameObject obj = (UnityEngine.GameObject)Selection.activeObject;
         string objPath = AssetDatabase.GetAssetPath(obj);
-        if (objPath.Contains(".prefab"))
+        if (objPath.Contains(FILE_EXTENSION))
         {
             Init();
             searchField.searchString = obj.name;
@@ -84,6 +85,13 @@ public class BufferObjectWindow : EditorWindow
 
         listOfProjectPrefabs = Sort(listOfProjectPrefabs);
 
+        DrawEntireUI(listOfProjectPrefabs);
+
+        LeftMouseClick(e);
+    }
+
+    private void DrawEntireUI(List<GameObject> listOfProjectPrefabs)
+    {
         EditorGUILayout.BeginVertical();
 
         DrawSearchBar();
@@ -95,7 +103,10 @@ public class BufferObjectWindow : EditorWindow
         DrawUpdateButtons();
 
         EditorGUILayout.EndVertical();
+    }
 
+    private static void LeftMouseClick(Event e)
+    {
         if (e.type == EventType.MouseDown && e.button == 0)                                             // Check for left mouse click if off the screen, or trying to unselect.
         {
             selectedGameObject = null;
@@ -160,18 +171,16 @@ public class BufferObjectWindow : EditorWindow
         }
     }
 
-    private List<GameObject> Sort(List<GameObject> list)
+    private List<GameObject> Sort(List<GameObject> prefabList)
     {
         if (choice == 0)                                                                                // Sort the list alphabetically
         {
-            list = list.OrderBy(obj => obj.name).ToList();
-        }
-        else                                                                                            // Or sort the list Unalphabetically
-        {
-            list = list.OrderByDescending(obj => obj.name).ToList();
+            prefabList = prefabList.OrderBy(obj => obj.name).ToList();
+            return prefabList;
         }
 
-        return list;
+        prefabList = prefabList.OrderByDescending(obj => obj.name).ToList();                                       // Or sort the list Unalphabetical
+        return prefabList;
     }
 
     private List<GameObject> CreateList()
@@ -179,8 +188,7 @@ public class BufferObjectWindow : EditorWindow
         List<GameObject> listOfProjectPrefabs = new List<GameObject>();                                 // ArrayList which will hold only the prfabs in the project and not the ones in the scene                                         
 
         ArrayList allObjects = new ArrayList();                                                         // GameObject array which contains all of the Game Objects, both in the scene and in the project
-
-        String[] allPaths = System.IO.Directory.GetFiles("Assets/", "*.prefab", System.IO.SearchOption.AllDirectories);
+        string[] allPaths = FetchAllPaths();
 
         foreach (String path in allPaths)
         {
@@ -190,7 +198,8 @@ public class BufferObjectWindow : EditorWindow
         foreach (GameObject obj in allObjects)                                                          // Loop through the array of all objects and check if they have the component required, 
         {                                                                                               // and check that the gameObjects are not located in the current scene
 
-            if (obj.scene.name != SceneManager.GetActiveScene().name && obj.name.ToUpper().Contains(searchInput))                                   // Check if the gameObject is not located in the current scene.
+            if (obj.scene.name != SceneManager.GetActiveScene().name && 
+                obj.name.ToUpper().Contains(searchInput))                                               // Check if the gameObject is not located in the current scene.
             {
                 listOfProjectPrefabs.Add(obj);                                                          // If both are true, then add the gameObject to the ArrayList of project prefabs
             }
@@ -199,51 +208,71 @@ public class BufferObjectWindow : EditorWindow
         return listOfProjectPrefabs;
     }
 
-    private void DrawList(List<GameObject> list)
+    private static string[] FetchAllPaths()
     {
-        foreach (GameObject obj in list)                                                                // Loop through the list of project Prefabs to create the GUI portion of the window.
+        return System.IO.Directory.GetFiles("Assets/", "*.prefab", System.IO.SearchOption.AllDirectories);
+    }
+
+    private void DrawList(List<GameObject> prefabList)
+    {
+        foreach (GameObject obj in prefabList)                                                          // Loop through the list of project Prefabs to create the GUI portion of the window.
         {
-            bool selected = false || obj.Equals(selectedGameObject);
+            bool selected = CheckIfSelected(obj);
 
             using (new GUILayout.HorizontalScope(EditorStyles.helpBox))                                 // Put each Prefab in the list inside of it's own horizontal help box
             {
-                if (selected)
-                {
-                    EditorGUILayout.BeginHorizontal(GetBtnStyleSelected());                             // If button selected, use style to set background blue
-                }
-                else
-                {
-                    EditorGUILayout.BeginHorizontal();                                                  // If not selected, use default style
-                }
+                CreateHorizontalBox(selected);
 
-                GUIStyle GetBtnStyleSelected()                                                          // Method for styling selected buttons to have a blue background
-                {
-                    GUIStyle s = new GUIStyle();
-                    s.normal.background = Resources.Load(BLUE_SQUARE, typeof(Texture2D)) as Texture2D;
-
-                    return s;
-                }
-
-                var rectPrefab = GUILayoutUtility.GetRect(15f, 15f, GUILayout.ExpandWidth(false));      // Rectangle for the prefab icon.
-
-                DrawIcon(rectPrefab, PREFAB_ICON);                                                       // Draw the prefab icon
-                DrawButton(obj, selected);                                                              // Draw the button with the obj name as a label.
-
-                var rectIcon = GUILayoutUtility.GetRect(15f, 15f, GUILayout.ExpandWidth(false));        // Rectangle for the check or cross icon
-
-                switch (CheckIfValid(obj))                                                              // Check if the obj is valid or not, then draws the coresponding icon
-                {
-                    case (int)ValidationResult.Success:
-                        DrawIcon(rectIcon, CHECK_ICON_PATH);                                              // Draw check mark icon
-                        break;
-                    case (int)ValidationResult.Fail:
-                        DrawIcon(rectIcon, CROSS_ICON_PATH);                                              // Draw cross Icon
-                        break;
-                }
+                DrawHorizontalBox(obj, selected);
 
                 EditorGUILayout.EndHorizontal();
             }
         }
+    }
+
+    private void DrawHorizontalBox(GameObject obj, bool selected)
+    {
+        var rectPrefab = GUILayoutUtility.GetRect(15f, 15f, GUILayout.ExpandWidth(false));      // Rectangle for the prefab icon.
+
+        DrawIcon(rectPrefab, PREFAB_ICON);                                                       // Draw the prefab icon
+        DrawButton(obj, selected);                                                              // Draw the button with the obj name as a label.
+
+        var rectIcon = GUILayoutUtility.GetRect(15f, 15f, GUILayout.ExpandWidth(false));        // Rectangle for the check or cross icon
+
+        switch (CheckIfValid(obj))                                                              // Check if the obj is valid or not, then draws the coresponding icon
+        {
+            case (int)ValidationResult.Success:
+                DrawIcon(rectIcon, CHECK_ICON_PATH);                                              // Draw check mark icon
+                break;
+            case (int)ValidationResult.Fail:
+                DrawIcon(rectIcon, CROSS_ICON_PATH);                                              // Draw cross Icon
+                break;
+        }
+    }
+
+    private static void CreateHorizontalBox(bool selected)
+    {
+        if (selected)
+        {
+            EditorGUILayout.BeginHorizontal(GetBtnStyleSelected());                             // If button selected, use style to set background blue
+        }
+        else
+        {
+            EditorGUILayout.BeginHorizontal();                                                  // If not selected, use default style
+        }
+
+        GUIStyle GetBtnStyleSelected()                                                          // Method for styling selected buttons to have a blue background
+        {
+            GUIStyle s = new GUIStyle();
+            s.normal.background = Resources.Load(BLUE_SQUARE, typeof(Texture2D)) as Texture2D;
+
+            return s;
+        }
+    }
+
+    private static bool CheckIfSelected(GameObject obj)
+    {
+        return obj.Equals(selectedGameObject);
     }
 
     private void CheckForRightClick(Event e)                                                            // Method which checks if the right mouse key is hit. If so, then make a menu for the right click menu
@@ -319,12 +348,12 @@ public class BufferObjectWindow : EditorWindow
                 wordWrap = true,
             };
 
-            if (EditorGUIUtility.isProSkin)
+            if (!EditorGUIUtility.isProSkin)
             {
-                s.normal.textColor = Color.white;                                                           // Set text color to white when not selected
-
                 return s;
             }
+
+            s.normal.textColor = Color.white;                                                       // Set text color to white when not selected
 
             return s;
         }
