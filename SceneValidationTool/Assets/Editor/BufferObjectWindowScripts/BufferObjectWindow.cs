@@ -70,6 +70,7 @@ public class BufferObjectWindow : EditorWindow
         string objPath = AssetDatabase.GetAssetPath(obj);
         if (objPath.Contains(".prefab"))
         {
+            Init();
             searchField.searchString = obj.name;
             searchInput = obj.name.ToUpper();
         }
@@ -295,7 +296,7 @@ public class BufferObjectWindow : EditorWindow
                 wordWrap = true,
             };
 
-            s.normal.textColor = Color.black;                                                           // Set text color to black when not selected
+            //s.normal.textColor = Color.black;                                                           // Set text color to black when not selected
 
             return s;
         }
