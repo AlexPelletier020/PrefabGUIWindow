@@ -1,0 +1,41 @@
+﻿<Properties StartupConfiguration="{7D55FE85-BD7F-7ABF-C505-CB0F5B0A0B64}|">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Editor/BufferObjectWindowScripts/AutocompleteSearchField.cs">
+    <Files>
+      <File FileName="Assets/Editor/EditorTool/SceneValidatorWindow.cs" Line="98" Column="60" />
+      <File FileName="Assets/Editor/EditorTool/SceneValidatorDrawing.cs" Line="57" Column="4" />
+      <File FileName="Assets/Editor/EditorTool/ValidationResult.cs" Line="7" Column="10" />
+      <File FileName="Assets/Editor/ValidationWindowScripts/ValidationWindow.cs" Line="18" Column="38" />
+      <File FileName="Assets/Editor/ContentSceneValidationRules.cs" Line="1" Column="1" />
+      <File FileName="Assets/Helper/SceneHelper.cs" Line="1" Column="1" />
+      <File FileName="Assets/Editor/BufferObjectWindowScripts/AutocompleteSearchField.cs" Line="78" Column="52" />
+      <File FileName="Assets/Editor/BufferObjectWindowScripts/BufferObjectWindow.cs" Line="102" Column="33" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="SceneValidationTool" expanded="True">
+            <Node name="Assets" expanded="True">
+              <Node name="Editor" expanded="True">
+                <Node name="BufferObjectWindowScripts" expanded="True">
+                  <Node name="AutocompleteSearchField.cs" selected="True" />
+                </Node>
+                <Node name="EditorTool" expanded="True" />
+                <Node name="ValidationWindowScripts" expanded="True">
+                  <Node name="Validations" expanded="True" />
+                </Node>
+              </Node>
+              <Node name="Helper" expanded="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="6e0dd62c-631c-4377-a764-2497a56de695" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>

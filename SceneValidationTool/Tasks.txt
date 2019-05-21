@@ -1,0 +1,4 @@
+Check and Create GameObjects
+Check if scene has only one camera
+Check and display number of enabled lights in the scene
+Check and if every GameObject has unique name
