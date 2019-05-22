@@ -8,7 +8,7 @@
       <File FileName="Assets/Editor/ContentSceneValidationRules.cs" Line="1" Column="1" />
       <File FileName="Assets/Helper/SceneHelper.cs" Line="1" Column="1" />
       <File FileName="Assets/Editor/BufferObjectWindowScripts/AutocompleteSearchField.cs" Line="78" Column="52" />
-      <File FileName="Assets/Editor/BufferObjectWindowScripts/BufferObjectWindow.cs" Line="258" Column="11" />
+      <File FileName="Assets/Editor/BufferObjectWindowScripts/BufferObjectWindow.cs" Line="87" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -33,7 +33,7 @@
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="6e0dd62c-631c-4377-a764-2497a56de695" />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="fd9866f5-6b9c-4ac6-8e7f-63ec369efd83" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>

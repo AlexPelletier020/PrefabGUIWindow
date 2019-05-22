@@ -55,8 +55,7 @@ public class BufferObjectWindow : EditorWindow
 
     void RightClick()
     {
-        searchField.searchString = selectedGameObject.name; 
-        searchInput = selectedGameObject.name.ToUpper();
+        Debug.Log(AssetDatabase.GetAssetPath(selectedGameObject) + "\n");
     }
 
     [MenuItem("Assets/Buffer/Check For Updates", priority = 1)]
@@ -281,7 +280,7 @@ public class BufferObjectWindow : EditorWindow
         {
             GenericMenu menu = new GenericMenu();
 
-            menu.AddItem(new GUIContent("Search For:"), false, RightClick);                            // Add menu item to right click menu, which calls the method YourCallBack.
+            menu.AddItem(new GUIContent("Get File Path:"), false, RightClick);                            // Add menu item to right click menu, which calls the method YourCallBack.
             menu.ShowAsContext();
 
             e.Use();
