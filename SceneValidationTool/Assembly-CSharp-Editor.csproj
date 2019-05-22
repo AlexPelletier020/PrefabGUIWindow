@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="Assets\Editor\BufferObjectWindowScripts\AutocompleteSearchField.cs" />
     <Compile Include="Assets\Editor\BufferObjectWindowScripts\BufferObjectWindow.cs" />
+    <Compile Include="Assets\Editor\BufferObjectWindowScripts\ListOfPrefabs.cs" />
     <Compile Include="Assets\Editor\ContentSceneValidationRules.cs" />
     <Compile Include="Assets\Editor\EditorTool\Attributes.cs" />
     <Compile Include="Assets\Editor\EditorTool\SceneValidatorDrawing.cs" />
@@ -724,6 +725,7 @@
     <Reference Include="Boo.Lang">
       <HintPath>/Applications/Unity/Hub/Editor/2018.3.12f1/Unity.app/Contents/MonoBleedingEdge/lib/mono/unityscript/Boo.Lang.dll</HintPath>
     </Reference>
+    <Compile Include="Assets\Editor\BufferObjectWindowScripts\SortingChoiceEnum.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Assembly-CSharp-firstpass.csproj">

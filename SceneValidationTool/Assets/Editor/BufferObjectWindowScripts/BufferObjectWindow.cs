@@ -5,7 +5,6 @@ using UnityEngine.SceneManagement;
 using Silverback.EditorTools;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 public class BufferObjectWindow : EditorWindow
 {
@@ -19,8 +18,10 @@ public class BufferObjectWindow : EditorWindow
     private string[] choices = new string[] { "Alphabetical", "Unalphabetical" };                       // List of items in drop down menu.    
     private static String searchInput = "";                                                             // Search input string variable used to define the search.
     private static GameObject selectedGameObject = null;                                                // Game Object selected by user.
-    List<GameObject> listOfUpdateObjects = new List<GameObject>();                                      // List of prefabs that are being updated when the button update all is pressed.
+    private readonly List<GameObject> listOfUpdateObjects = new List<GameObject>();                     // List of prefabs that are being updated when the button update all is pressed.
     private static AutocompleteSearchField.AutocompleteSearchField searchField;                         // Create a searchField bar.
+
+    private ListOfPrefabs prefabList = new ListOfPrefabs();                                             // Object linked to the list of prefabs.
 
     [MenuItem("Buffered/Update Buffer Objects")]
     static void Init()                                                                                  //Initialize the window creation for Editor Window
@@ -44,7 +45,7 @@ public class BufferObjectWindow : EditorWindow
         searchField.ClearResults();
         if (!string.IsNullOrEmpty(searchString))
         {
-            searchInput = searchString.ToUpper();                                                       // Set the string search input equal to the user input case insensitive by making all upper case.
+            searchInput = searchString.ToLower();                                                       // Set the string search input equal to the user input case insensitive by making all upper case.
             return;
         }
         searchInput = "";                                                                               // Set string search input to blank if nothing is in the bar
@@ -55,50 +56,34 @@ public class BufferObjectWindow : EditorWindow
         Debug.Log(AssetDatabase.GetAssetPath(selectedGameObject) + "\n");
     }
 
-    [MenuItem("Assets/Buffer/Check For Updates", priority = 1)]
-    private static void SetupPrefab()
-    {
-        GameObject obj = (UnityEngine.GameObject)Selection.activeObject;
-        string objPath = AssetDatabase.GetAssetPath(obj);
-        if (objPath.Contains(FILE_EXTENSION))
-        {
-            Init();
-            searchField.searchString = obj.name;
-            searchInput = obj.name.ToUpper();
-        }
-    }
-
     void OnGUI()                                                                                        // This is where all the GUI elements for the window is located for the window
     {
-
         var e = Event.current;                                                                          // Get Key events from the user including mouse keys
 
         CheckForRightClick(e);                                                                          // Check right click
 
         listOfUpdateObjects.Clear();                                                                    // Clear the list being drawn so it's not repeated.
 
-        List<GameObject> listOfProjectPrefabs = CreateList();                                           // Repopulate the list by calling CreateList method.
+        prefabList.PopulateList(searchInput, choice);                                                   // Populate the list inside the ListOfPrefabs class
 
-        listOfProjectPrefabs = Sort(listOfProjectPrefabs);
+        DrawEntireUI();                                                                                 // This is the header method for drawing the Window
 
-        DrawEntireUI(listOfProjectPrefabs);
-
-        LeftMouseClick(e);
+        LeftMouseClick(e);                                                                              // Check for mouse left click.
     }
 
-    private void DrawEntireUI(List<GameObject> listOfProjectPrefabs)
+    private void DrawEntireUI()                                                                         // Main UI header method to draw the UI for the window
     {
-        EditorGUILayout.BeginVertical();
+        EditorGUILayout.BeginVertical();                                                                // Begin the vertical section
 
-        DrawSearchBar();
+        DrawSearchBar();                                                                                // Draw the search bar using the AutocompleteSearchField class 
 
-        DrawScrollingSection(listOfProjectPrefabs);
+        DrawScrollingSection();                                                                         // Draw the section of th window which has a scrolling portion
 
-        DrawTextBox();
+        DrawTextBox();                                                                                  // Draw the text box at the bottom of the list of prefabs to hold information
 
-        DrawUpdateButtons();
+        DrawUpdateButtons();                                                                            // Draw the update buttons.
 
-        EditorGUILayout.EndVertical();
+        EditorGUILayout.EndVertical();                                                                  // End the verticle section
     }
 
     private static void LeftMouseClick(Event e)
@@ -114,19 +99,24 @@ public class BufferObjectWindow : EditorWindow
     {
         using (new GUILayout.HorizontalScope(EditorStyles.helpBox))                                     // Put each Prefab in the list inside of it's own horizontal help box
         {
-            if (selectedGameObject != null)
+            DrawButtons();
+        }
+    }
+
+    private void DrawButtons()
+    {
+        if (selectedGameObject != null)
+        {
+            if (GUILayout.Button("Update"))                                                             // Add a button at the bottom of the window that displays Update All, and will be used to Update every Prefab
             {
-                if (GUILayout.Button("Update"))                                                         // Add a button at the bottom of the window that displays Update All, and will be used to Update every Prefab
-                {
-                    Debug.Log(AssetDatabase.GetAssetPath(selectedGameObject));
-                }
+                Debug.Log(AssetDatabase.GetAssetPath(selectedGameObject));
             }
-            if (GUILayout.Button("Update All"))                                                         // Add a button at the bottom of the window that displays Update All, and will be used to Update every Prefab
+        }
+        if (GUILayout.Button("Update All"))                                                             // Add a button at the bottom of the window that displays Update All, and will be used to Update every Prefab
+        {
+            foreach (GameObject obj in listOfUpdateObjects)
             {
-                foreach (GameObject obj in listOfUpdateObjects)
-                {
-                    Debug.Log(AssetDatabase.GetAssetPath(obj) + "\n");
-                }
+                Debug.Log(AssetDatabase.GetAssetPath(obj) + "\n");
             }
         }
     }
@@ -144,18 +134,23 @@ public class BufferObjectWindow : EditorWindow
         }
     }
 
-    private void DrawScrollingSection(List<GameObject> list)
+    private void DrawScrollingSection()
     {
         var scrollControlID = GUIUtility.GetControlID(FocusType.Passive);                               // Add Scrolling to the window
-        var scrollState = (ScrollState)GUIUtility.GetStateObject(typeof(ScrollState), scrollControlID);
+        var scrollState = GetScrollState(scrollControlID);
 
         using (var scrollView = new GUILayout.ScrollViewScope(scrollState.scrollPosition))              // Scrolling section of the window.
         {
             scrollState.scrollPosition = scrollView.scrollPosition;
 
-            DrawList(list);
+            DrawList();
         }
 
+    }
+
+    private static ScrollState GetScrollState(int scrollControlID)
+    {
+        return (ScrollState)GUIUtility.GetStateObject(typeof(ScrollState), scrollControlID);
     }
 
     private void DrawSearchBar()
@@ -163,66 +158,33 @@ public class BufferObjectWindow : EditorWindow
         using (new GUILayout.HorizontalScope(EditorStyles.helpBox))                                     // Put each Prefab in the list inside of it's own horizontal help box
         {
             searchField.OnGUI();
-            choice = EditorGUILayout.Popup(choice, choices, GUILayout.MaxWidth(200));
+            choice = DrawPopUpButton();
         }
     }
 
-    private List<GameObject> Sort(List<GameObject> prefabList)
+    private int DrawPopUpButton()
     {
-        if (choice == 0)                                                                                // Sort the list alphabetically
-        {
-            prefabList = prefabList.OrderBy(obj => obj.name).ToList();
-            return prefabList;
-        }
-
-        prefabList = prefabList.OrderByDescending(obj => obj.name).ToList();                           // Or sort the list Unalphabetical
-        return prefabList;
+        return EditorGUILayout.Popup(choice, choices, GUILayout.MaxWidth(200));
     }
 
-    private List<GameObject> CreateList()
+    private void DrawList()
     {
-        List<GameObject> listOfProjectPrefabs = new List<GameObject>();                                 // ArrayList which will hold only the prfabs in the project and not the ones in the scene                                         
-
-        ArrayList allObjects = new ArrayList();                                                         // GameObject array which contains all of the Game Objects, both in the scene and in the project
-        string[] allPaths = FetchAllPaths();
-
-        foreach (String path in allPaths)
-        {
-            allObjects.Add(AssetDatabase.LoadAssetAtPath(path, typeof(GameObject)));
-        }
-
-        foreach (GameObject obj in allObjects)                                                          // Loop through the array of all objects and check if they have the component required, 
-        {                                                                                               // and check that the gameObjects are not located in the current scene
-
-            if (obj.scene.name != SceneManager.GetActiveScene().name && 
-                obj.name.ToUpper().Contains(searchInput))                                               // Check if the gameObject is not located in the current scene.
-            {
-                listOfProjectPrefabs.Add(obj);                                                          // If both are true, then add the gameObject to the ArrayList of project prefabs
-            }
-        }
-
-        return listOfProjectPrefabs;
-    }
-
-    private static string[] FetchAllPaths()
-    {
-        return System.IO.Directory.GetFiles("Assets/", "*.prefab", System.IO.SearchOption.AllDirectories);
-    }
-
-    private void DrawList(List<GameObject> prefabList)
-    {
-        foreach (GameObject obj in prefabList)                                                          // Loop through the list of project Prefabs to create the GUI portion of the window.
+        foreach (GameObject obj in prefabList.listOfProjectPrefabs)                                     // Loop through the list of project Prefabs to create the GUI portion of the window.
         {
             bool selected = CheckIfSelected(obj);
+            CreateHorizontalHelpBox(obj, selected);
+        }
+    }
 
-            using (new GUILayout.HorizontalScope(EditorStyles.helpBox))                                 // Put each Prefab in the list inside of it's own horizontal help box
-            {
-                CreateHorizontalBox(selected);
+    private void CreateHorizontalHelpBox(GameObject obj, bool selected)
+    {
+        using (new GUILayout.HorizontalScope(EditorStyles.helpBox))                                     // Put each Prefab in the list inside of it's own horizontal help box
+        {
+            CreateHorizontalBox(selected);
 
-                DrawHorizontalBox(obj, selected);
+            DrawHorizontalBox(obj, selected);
 
-                EditorGUILayout.EndHorizontal();
-            }
+            EditorGUILayout.EndHorizontal();
         }
     }
 
@@ -251,11 +213,12 @@ public class BufferObjectWindow : EditorWindow
         if (selected)
         {
             EditorGUILayout.BeginHorizontal(GetBtnStyleSelected());                                     // If button selected, use style to set background blue
+            return;
         }
-        else
-        {
-            EditorGUILayout.BeginHorizontal();                                                          // If not selected, use default style
-        }
+
+        EditorGUILayout.BeginHorizontal();                                                              // If not selected, use default style
+
+        return;
 
         GUIStyle GetBtnStyleSelected()                                                                  // Method for styling selected buttons to have a blue background
         {
@@ -364,6 +327,19 @@ public class BufferObjectWindow : EditorWindow
 
             s.normal.textColor = Color.white;                                                           // Set text color to white when selected.
             return s;
+        }
+    }
+
+    [MenuItem("Assets/Buffer/Check For Updates", priority = 1)]                                         // Functionality for right click in the project window.
+    private static void SetupPrefab()                                                                   // This will add the name of the prefab to the search field.
+    {
+        GameObject obj = (UnityEngine.GameObject)Selection.activeObject;
+        string objPath = AssetDatabase.GetAssetPath(obj);
+        if (objPath.Contains(FILE_EXTENSION))
+        {
+            Init();
+            searchField.searchString = obj.name;
+            searchInput = obj.name.ToLower();
         }
     }
 }

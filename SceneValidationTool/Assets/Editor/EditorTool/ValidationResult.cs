@@ -1,9 +1,9 @@
 ﻿namespace Silverback.EditorTools
 {
-	public enum ValidationResult
-	{
-		Fail,
-		Unknown,
-		Success
-	}
+    public enum ValidationResult
+    {
+        Fail,
+        Unknown,
+        Success
+    }
 }
