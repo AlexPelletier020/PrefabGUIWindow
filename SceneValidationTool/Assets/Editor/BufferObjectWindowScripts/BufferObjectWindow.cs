@@ -22,6 +22,7 @@ public class BufferObjectWindow : EditorWindow
     private static AutocompleteSearchField.AutocompleteSearchField searchField;                         // Create a searchField bar.
 
     private ListOfPrefabs prefabList = new ListOfPrefabs();                                             // Object linked to the list of prefabs.
+    private ButtonLogic buttonLogic = new ButtonLogic();
 
     [MenuItem("Buffered/Update Buffer Objects")]
     static void Init()                                                                                  //Initialize the window creation for Editor Window
@@ -109,15 +110,12 @@ public class BufferObjectWindow : EditorWindow
         {
             if (GUILayout.Button("Update"))                                                             // Add a button at the bottom of the window that displays Update All, and will be used to Update every Prefab
             {
-                Debug.Log(AssetDatabase.GetAssetPath(selectedGameObject));
+                buttonLogic.UpdateButton(selectedGameObject);
             }
         }
         if (GUILayout.Button("Update All"))                                                             // Add a button at the bottom of the window that displays Update All, and will be used to Update every Prefab
         {
-            foreach (GameObject obj in listOfUpdateObjects)
-            {
-                Debug.Log(AssetDatabase.GetAssetPath(obj) + "\n");
-            }
+            buttonLogic.UpdateAllButton(listOfUpdateObjects);
         }
     }
 
@@ -286,17 +284,19 @@ public class BufferObjectWindow : EditorWindow
     {
         if (selected)
         {
-            if (GUILayout.Button(obj.name, GetBtnStyleSelected()))                                      // Add a button at the bottom of the window that displays Update All, and will be used to Update every Prefab
-            {                                                                                           // by looping through the ArrayList of Project Prefabs.
-                selectedGameObject = obj;
-            }
+            DrawSelected(obj);
             return;
         }
 
+        DrawNotSelected(obj);
+
+    }
+
+    private static void DrawNotSelected(GameObject obj)
+    {
         if (GUILayout.Button(obj.name, GetBtnStyleNotSelected()))                                       // Add a button at the bottom of the window that displays Update All, and will be used to Update every Prefab
         {                                                                                               // by looping through the ArrayList of Project Prefabs.
             selectedGameObject = obj;
-
         }
 
         GUIStyle GetBtnStyleNotSelected()                                                               // Style for sections not selected
@@ -316,6 +316,16 @@ public class BufferObjectWindow : EditorWindow
 
             return s;
         }
+    }
+
+    private static void DrawSelected(GameObject obj)
+    {
+        if (GUILayout.Button(obj.name, GetBtnStyleSelected()))                                      // Add a button at the bottom of the window that displays Update All, and will be used to Update every Prefab
+        {                                                                                           // by looping through the ArrayList of Project Prefabs.
+            selectedGameObject = obj;
+        }
+        return;
+
 
         GUIStyle GetBtnStyleSelected()                                                                  // Style for selected section.
         {

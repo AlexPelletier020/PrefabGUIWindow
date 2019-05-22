@@ -8,9 +8,10 @@
       <File FileName="Assets/Editor/ContentSceneValidationRules.cs" Line="1" Column="1" />
       <File FileName="Assets/Helper/SceneHelper.cs" Line="1" Column="1" />
       <File FileName="Assets/Editor/BufferObjectWindowScripts/AutocompleteSearchField.cs" Line="182" Column="22" />
-      <File FileName="Assets/Editor/BufferObjectWindowScripts/ListOfPrefabs.cs" Line="10" Column="27" />
+      <File FileName="Assets/Editor/BufferObjectWindowScripts/ListOfPrefabs.cs" Line="10" Column="14" />
       <File FileName="Assets/Editor/BufferObjectWindowScripts/SortingChoiceEnum.cs" Line="6" Column="23" />
-      <File FileName="Assets/Editor/BufferObjectWindowScripts/BufferObjectWindow.cs" Line="334" Column="46" />
+      <File FileName="Assets/Editor/BufferObjectWindowScripts/ButtonLogic.cs" Line="13" Column="71" />
+      <File FileName="Assets/Editor/BufferObjectWindowScripts/BufferObjectWindow.cs" Line="113" Column="29" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
