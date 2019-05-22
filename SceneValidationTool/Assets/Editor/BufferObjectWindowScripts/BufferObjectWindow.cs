@@ -6,9 +6,6 @@ using Silverback.EditorTools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Sirenix.OdinInspector.Editor;
-using Sirenix.OdinInspector;
-using UnityEditor.IMGUI.Controls;
 
 public class BufferObjectWindow : EditorWindow
 {
@@ -178,7 +175,7 @@ public class BufferObjectWindow : EditorWindow
             return prefabList;
         }
 
-        prefabList = prefabList.OrderByDescending(obj => obj.name).ToList();                                       // Or sort the list Unalphabetical
+        prefabList = prefabList.OrderByDescending(obj => obj.name).ToList();                           // Or sort the list Unalphabetical
         return prefabList;
     }
 
@@ -231,20 +228,20 @@ public class BufferObjectWindow : EditorWindow
 
     private void DrawHorizontalBox(GameObject obj, bool selected)
     {
-        var rectPrefab = GUILayoutUtility.GetRect(15f, 15f, GUILayout.ExpandWidth(false));      // Rectangle for the prefab icon.
+        var rectPrefab = GUILayoutUtility.GetRect(15f, 15f, GUILayout.ExpandWidth(false));              // Rectangle for the prefab icon.
 
-        DrawIcon(rectPrefab, PREFAB_ICON);                                                       // Draw the prefab icon
-        DrawButton(obj, selected);                                                              // Draw the button with the obj name as a label.
+        DrawIcon(rectPrefab, PREFAB_ICON);                                                              // Draw the prefab icon
+        DrawButton(obj, selected);                                                                      // Draw the button with the obj name as a label.
 
-        var rectIcon = GUILayoutUtility.GetRect(15f, 15f, GUILayout.ExpandWidth(false));        // Rectangle for the check or cross icon
+        var rectIcon = GUILayoutUtility.GetRect(15f, 15f, GUILayout.ExpandWidth(false));                // Rectangle for the check or cross icon
 
-        switch (CheckIfValid(obj))                                                              // Check if the obj is valid or not, then draws the coresponding icon
+        switch (CheckIfValid(obj))                                                                      // Check if the obj is valid or not, then draws the coresponding icon
         {
             case (int)ValidationResult.Success:
-                DrawIcon(rectIcon, CHECK_ICON_PATH);                                              // Draw check mark icon
+                DrawIcon(rectIcon, CHECK_ICON_PATH);                                                    // Draw check mark icon
                 break;
             case (int)ValidationResult.Fail:
-                DrawIcon(rectIcon, CROSS_ICON_PATH);                                              // Draw cross Icon
+                DrawIcon(rectIcon, CROSS_ICON_PATH);                                                    // Draw cross Icon
                 break;
         }
     }
@@ -253,14 +250,14 @@ public class BufferObjectWindow : EditorWindow
     {
         if (selected)
         {
-            EditorGUILayout.BeginHorizontal(GetBtnStyleSelected());                             // If button selected, use style to set background blue
+            EditorGUILayout.BeginHorizontal(GetBtnStyleSelected());                                     // If button selected, use style to set background blue
         }
         else
         {
-            EditorGUILayout.BeginHorizontal();                                                  // If not selected, use default style
+            EditorGUILayout.BeginHorizontal();                                                          // If not selected, use default style
         }
 
-        GUIStyle GetBtnStyleSelected()                                                          // Method for styling selected buttons to have a blue background
+        GUIStyle GetBtnStyleSelected()                                                                  // Method for styling selected buttons to have a blue background
         {
             GUIStyle s = new GUIStyle();
             s.normal.background = Resources.Load(BLUE_SQUARE, typeof(Texture2D)) as Texture2D;
@@ -280,7 +277,7 @@ public class BufferObjectWindow : EditorWindow
         {
             GenericMenu menu = new GenericMenu();
 
-            menu.AddItem(new GUIContent("Get File Path:"), false, RightClick);                            // Add menu item to right click menu, which calls the method YourCallBack.
+            menu.AddItem(new GUIContent("Get File Path:"), false, RightClick);                          // Add menu item to right click menu, which calls the method YourCallBack.
             menu.ShowAsContext();
 
             e.Use();
@@ -352,7 +349,7 @@ public class BufferObjectWindow : EditorWindow
                 return s;
             }
 
-            s.normal.textColor = Color.white;                                                       // Set text color to white when not selected
+            s.normal.textColor = Color.white;                                                           // Set text color to white when not selected
 
             return s;
         }
