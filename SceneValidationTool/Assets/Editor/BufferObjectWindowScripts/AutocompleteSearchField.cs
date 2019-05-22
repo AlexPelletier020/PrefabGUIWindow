@@ -4,6 +4,8 @@ using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
+// Code from https://github.com/marijnz/unity-autocomplete-search-field 
+// Under the MIT license
 namespace AutocompleteSearchField
 {
     [Serializable]
