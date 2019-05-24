@@ -23,7 +23,7 @@ public class BufferObjectWindow : EditorWindow
     private readonly ButtonLogic buttonLogic = new ButtonLogic();
 
     [MenuItem("Buffered/Update Buffer Objects")]
-    static void Init()                                                                                  //Initialize the window creation for Editor Window
+    public static void Init()                                                                                  //Initialize the window creation for Editor Window
     {
         var window = GetWindow<BufferObjectWindow>();                                                   // Create a window variable
 

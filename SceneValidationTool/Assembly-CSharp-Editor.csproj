@@ -64,8 +64,8 @@
     <Compile Include="Assets\Editor\BufferImportWindow\Buffers\Settings\AOBufferSettings.cs" />
     <Compile Include="Assets\Editor\BufferImportWindow\Buffers\Settings\AppleBufferSettings.cs" />
     <Compile Include="Assets\Editor\BufferImportWindow\Buffers\Settings\PhoneBufferSettings.cs" />
-    <Compile Include="Assets\Editor\BufferImportWindow\BufferWindow.cs" />
     <Compile Include="Assets\Editor\BufferImportWindow\ImportTab.cs" />
+    <Compile Include="Assets\Editor\BufferImportWindow\WindowBuffer.cs" />
     <Compile Include="Assets\Editor\BufferObjectWindowScripts\AutocompleteSearchField.cs" />
     <Compile Include="Assets\Editor\BufferObjectWindowScripts\BufferObjectWindow.cs" />
     <Compile Include="Assets\Editor\BufferObjectWindowScripts\ButtonLogic.cs" />

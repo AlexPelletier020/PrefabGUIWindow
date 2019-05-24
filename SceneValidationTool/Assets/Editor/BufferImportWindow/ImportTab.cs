@@ -2,7 +2,6 @@
 using UnityEditor;
 using System.IO;
 using Silverback.EditorTools;
-using Sirenix.OdinInspector.Editor;
 
 public class ImportTab
 {
@@ -127,6 +126,7 @@ public class ImportTab
         {
             selected = -1;
             info = "";
+
         }
     }
 
