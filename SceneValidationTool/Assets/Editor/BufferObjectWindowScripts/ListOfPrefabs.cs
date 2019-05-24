@@ -9,6 +9,9 @@ using Silverback.EditorTools;
 
 public class ListOfPrefabs
 {
+    private const string FILE_TYPE = "*.prefab";
+    private const string ROOT_FOLDER = "Assets/";
+
     public List<GameObject> listOfProjectPrefabs;
 
     public void PopulateList(String searchInput, int sortingChoice)
@@ -66,6 +69,6 @@ public class ListOfPrefabs
 
     private static string[] FetchAllPaths()
     {
-        return System.IO.Directory.GetFiles("Assets/", "*.prefab", System.IO.SearchOption.AllDirectories);
+        return System.IO.Directory.GetFiles(ROOT_FOLDER, FILE_TYPE, System.IO.SearchOption.AllDirectories);
     }
 }

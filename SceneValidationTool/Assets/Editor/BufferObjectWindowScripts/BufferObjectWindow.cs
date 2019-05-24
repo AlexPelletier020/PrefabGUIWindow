@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
 using UnityEditor;
-using System.Collections;
-using UnityEngine.SceneManagement;
 using Silverback.EditorTools;
 using System;
 using System.Collections.Generic;
@@ -15,14 +13,14 @@ public class BufferObjectWindow : EditorWindow
     private const string FILE_EXTENSION = ".prefab";
 
     private int choice = 0;                                                                             // Drop down menu integer user choice for sorting.
-    private string[] choices = new string[] { "Alphabetical", "Unalphabetical" };                       // List of items in drop down menu.    
+    private readonly string[] choices = new string[] { "Alphabetical", "Unalphabetical" };                       // List of items in drop down menu.    
     private static String searchInput = "";                                                             // Search input string variable used to define the search.
     private static GameObject selectedGameObject = null;                                                // Game Object selected by user.
     private readonly List<GameObject> listOfUpdateObjects = new List<GameObject>();                     // List of prefabs that are being updated when the button update all is pressed.
     private static AutocompleteSearchField.AutocompleteSearchField searchField;                         // Create a searchField bar.
 
-    private ListOfPrefabs prefabList = new ListOfPrefabs();                                             // Object linked to the list of prefabs.
-    private ButtonLogic buttonLogic = new ButtonLogic();
+    private readonly ListOfPrefabs prefabList = new ListOfPrefabs();                                             // Object linked to the list of prefabs.
+    private readonly ButtonLogic buttonLogic = new ButtonLogic();
 
     [MenuItem("Buffered/Update Buffer Objects")]
     static void Init()                                                                                  //Initialize the window creation for Editor Window
@@ -54,7 +52,7 @@ public class BufferObjectWindow : EditorWindow
 
     void RightClick()
     {
-        Debug.Log(AssetDatabase.GetAssetPath(selectedGameObject) + "\n");
+        buttonLogic.RightClickLogic(selectedGameObject);
     }
 
     void OnGUI()                                                                                        // This is where all the GUI elements for the window is located for the window

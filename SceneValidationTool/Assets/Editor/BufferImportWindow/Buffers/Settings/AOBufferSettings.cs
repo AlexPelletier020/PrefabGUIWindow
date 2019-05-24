@@ -1,0 +1,187 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEditor;
+using UnityEngine;
+
+public class AOBufferSettings : IBufferInterface
+{
+    bool realtimeLighting = true;
+    bool mixedLighting = true;
+    bool lightmapping = true;
+
+    bool useRGI = true;
+
+    bool useBGI = true;
+    int lightModeOption = 2;
+
+    int lightmapOption = 1;
+    bool usePrioritizeView = true;
+    int amountOfDirectSamples = 32;
+    int amountOfIndirectSamples = 500;
+    int bouncesOption = 2;
+    int filteringOption = 1;
+    float indirectRes = 2f;
+    float lightResolution = 40;
+    int lightPadding = 2;
+    int lightSizeOption = 3;
+    bool compressLight = true;
+    bool ambientOcclusion = false;
+    int directionalModeOption = 1;
+    float indirectIntensity = 1;
+    float albedoBoost = 1;
+
+    public string nameOfBuffer = "AO Buffer";
+    public string version = "V.09";
+
+    public void DrawSettingScreen()
+    {
+        DrawRealtimeLighting();
+
+        DrawMixedLighting();
+
+        DrawLightmapSettings();
+    }
+
+    private void DrawLightmapSettings()
+    {
+        EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+        EditorGUILayout.BeginHorizontal();
+        lightmapping = EditorGUILayout.Foldout(lightmapping, "Lightmapping Settings");
+        EditorGUILayout.EndHorizontal();
+        if (lightmapping)
+        {
+            EditorGUILayout.BeginHorizontal();
+            string[] lightmapOptions = { "Enlighten", "Progressive CPU" };
+            GUILayout.Space(20);
+            lightmapOption = EditorGUILayout.Popup("Lightmapper", lightmapOption, lightmapOptions);
+            EditorGUILayout.EndHorizontal();
+
+            if (lightmapOption.Equals(1))
+            {
+                DrawCPUSettings();
+            }
+
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.Space(20);
+            indirectRes = EditorGUILayout.FloatField("Indirect Resolution", indirectRes);
+            EditorGUILayout.LabelField("Texels per Unit");
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.Space(20);
+            lightResolution = EditorGUILayout.FloatField("Lightmap Resolution", lightResolution);
+            EditorGUILayout.LabelField("Texels per Unit");
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.Space(20);
+            lightPadding = EditorGUILayout.IntField("Lightmap Padding", lightPadding);
+            EditorGUILayout.LabelField("Texels");
+            EditorGUILayout.EndHorizontal();
+
+
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.Space(20);
+            string[] lightSize = { "32", "64", "128", "256", "512", "1024", "2048", "4096" };
+            lightSizeOption = EditorGUILayout.Popup("Lightmap Size", lightSizeOption, lightSize);
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.Space(20);
+            compressLight = EditorGUILayout.Toggle("Compress", compressLight);
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.Space(20);
+            ambientOcclusion = EditorGUILayout.Toggle("Compress", ambientOcclusion);
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.Space(20);
+            string[] directionalModeOPtions = { "Non-Directional", "Directional" };
+            directionalModeOption = EditorGUILayout.Popup("Directional Mode", directionalModeOption, directionalModeOPtions);
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.Space(20);
+            EditorGUILayout.LabelField("Indirect Intensity");
+            indirectIntensity = EditorGUILayout.Slider(indirectIntensity, 0, 5);
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.Space(20);
+            EditorGUILayout.LabelField("Albedo Boost");
+            albedoBoost = EditorGUILayout.Slider(albedoBoost, 1, 10);
+            EditorGUILayout.EndHorizontal();
+        }
+        EditorGUILayout.EndVertical();
+    }
+
+    private void DrawCPUSettings()
+    {
+        EditorGUILayout.BeginHorizontal();
+        GUILayout.Space(30);
+        usePrioritizeView = EditorGUILayout.Toggle("Prioritize View", usePrioritizeView);
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
+        GUILayout.Space(30);
+        amountOfDirectSamples = EditorGUILayout.IntField("Direct Samples", amountOfDirectSamples);
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
+        GUILayout.Space(30);
+        amountOfIndirectSamples = EditorGUILayout.IntField("Indirect Samples", amountOfIndirectSamples);
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
+        string[] bouncesOptions = { "none", "1", "2", "3", "4" };
+        GUILayout.Space(30);
+        bouncesOption = EditorGUILayout.Popup("Bounces", bouncesOption, bouncesOptions);
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
+        string[] filteringOptions = { "none", "Auto", "Advanced" };
+        GUILayout.Space(30);
+        filteringOption = EditorGUILayout.Popup("Filtering", filteringOption, filteringOptions);
+        EditorGUILayout.EndHorizontal();
+    }
+
+    private void DrawMixedLighting()
+    {
+        EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+        EditorGUILayout.BeginHorizontal();
+        mixedLighting = EditorGUILayout.Foldout(mixedLighting, "Mixed Lighting");
+        EditorGUILayout.EndHorizontal();
+        if (mixedLighting)
+        {
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.Space(20);
+            useBGI = EditorGUILayout.Toggle("Baked Global Illumination", useBGI);
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            string[] lightingModeOptions = { "Baked Indirect", "Substractive", "Shadowmask" };
+            GUILayout.Space(20);
+            lightModeOption = EditorGUILayout.Popup("Lighting Mode", lightModeOption, lightingModeOptions);
+            EditorGUILayout.EndHorizontal();
+        }
+        EditorGUILayout.EndVertical();
+    }
+
+    private void DrawRealtimeLighting()
+    {
+        EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+        EditorGUILayout.BeginHorizontal();
+        realtimeLighting = EditorGUILayout.Foldout(realtimeLighting, "Realtime Lighting");
+        EditorGUILayout.EndHorizontal();
+        if (realtimeLighting)
+        {
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.Space(20);
+            useRGI = EditorGUILayout.Toggle("Realtime Global Illumination", useRGI);
+            EditorGUILayout.EndHorizontal();
+        }
+        EditorGUILayout.EndVertical();
+    }
+}
