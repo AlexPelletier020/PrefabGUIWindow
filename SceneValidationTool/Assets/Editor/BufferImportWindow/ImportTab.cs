@@ -47,6 +47,9 @@ public class ImportTab
             case 2:
                 bufferName = m_phoneBufferSettings.nameOfBuffer;
                 break;
+            default:
+                bufferName = "";
+                break;
         }
     }
 
@@ -86,7 +89,6 @@ public class ImportTab
 
         if (GUILayout.Button("<", GUILayout.MaxWidth(20)))
         {
-            Debug.Log("Hello World");
             window = 0;
         }
         GUILayout.FlexibleSpace();
