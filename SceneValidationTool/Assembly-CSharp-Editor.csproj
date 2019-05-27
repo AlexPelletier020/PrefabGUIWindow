@@ -60,6 +60,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Editor\BufferImportWindow\Buffers\AbstractSerializedFields.cs" />
     <Compile Include="Assets\Editor\BufferImportWindow\Buffers\IBufferInterface.cs" />
     <Compile Include="Assets\Editor\BufferImportWindow\Buffers\Settings\AOBufferSettings.cs" />
     <Compile Include="Assets\Editor\BufferImportWindow\Buffers\Settings\AppleBufferSettings.cs" />

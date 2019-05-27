@@ -3,44 +3,26 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public class AppleBufferSettings : IBufferInterface
+public class AppleBufferSettings : AbstractSerializedFields, IBufferInterface
 {
+    AppleSettings settings;
+
     bool environmentFold = true;
     bool realtimeLighting = true;
     bool mixedLighting = true;
     bool lightmapping = true;
 
-    Material mat = null;
-    Light mainLight = null;
-    int skyLightOption = 0;
-    int ambientOption = 0;
-    float intensityLight = 1;
-    int skyReflectionOption = 0;
-    int resolutionOption = 3;
-    int compressionOption = 2;
-    float intensityReflection = 1;
-    int bounces = 1;
-
-    bool useRGI = true;
-
-    bool useBGI = true;
-    int lightModeOption = 2;
-
-    int lightmapOption = 1;
-    bool usePrioritizeView = true;
-    int amountOfDirectSamples = 32;
-    int amountOfIndirectSamples = 500;
-    int bouncesOption = 2;
-    int filteringOption = 1;
-    float indirectRes = 2f;
-    float lightResolution = 40;
-    int lightPadding = 2;
-    int lightSizeOption = 3;
-    bool compressLight = true;
-    bool ambientOcclusion = false;
-    int directionalModeOption = 1;
-    float indirectIntensity = 1;
-    float albedoBoost = 1;
+    readonly string[] skyLightOptions = { "Skybox", "Gradient", "Color" };
+    readonly string[] ambientOptions = { "Realtime", "Baked" };
+    readonly string[] reflectionSourceOptions = { "Skybox", "Custom" };
+    readonly string[] resolutionOptions = { "16", "32", "64", "128", "256", "512", "1024", "2048" };
+    readonly string[] compressionOptions = { "Uncompressed", "Compressed", "Auto" };
+    readonly string[] lightingModeOptions = { "Baked Indirect", "Substractive", "Shadowmask" };
+    readonly string[] bouncesOptions = { "none", "1", "2", "3", "4" };
+    readonly string[] filteringOptions = { "none", "Auto", "Advanced" };
+    readonly string[] directionalModeOptions = { "Non-Directional", "Directional" };
+    readonly string[] lightSize = { "32", "64", "128", "256", "512", "1024", "2048", "4096" };
+    readonly string[] lightmapOptions = { "Enlighten", "Progressive CPU" };
 
     public string nameOfBuffer = "Apple Buffer";
     public string version = "V.08";
@@ -59,126 +41,63 @@ public class AppleBufferSettings : IBufferInterface
     private void DrawLightmapSettings()
     {
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-        EditorGUILayout.BeginHorizontal();
-        lightmapping = EditorGUILayout.Foldout(lightmapping, "Lightmapping Settings");
-        EditorGUILayout.EndHorizontal();
+
+        lightmapping = DrawFoldout(lightmapping, "Lightmap Settings");
+
         if (lightmapping)
         {
-            EditorGUILayout.BeginHorizontal();
-            string[] lightmapOptions = { "Enlighten", "Progressive CPU" };
-            GUILayout.Space(20);
-            lightmapOption = EditorGUILayout.Popup("Lightmapper", lightmapOption, lightmapOptions);
-            EditorGUILayout.EndHorizontal();
+            settings.lightmapOption = DrawPopup(settings.lightmapOption, lightmapOptions, "Lightmapper", 20);
 
-            if (lightmapOption.Equals(1))
+            if (settings.lightmapOption.Equals(1))
             {
                 DrawCPUSettings();
             }
 
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            indirectRes = EditorGUILayout.FloatField("Indirect Resolution", indirectRes);
-            EditorGUILayout.LabelField("Texels per Unit");
-            EditorGUILayout.EndHorizontal();
+            settings.indirectRes = DrawFloatField(settings.indirectRes, "Indirect Resolution", 20);
 
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            lightResolution = EditorGUILayout.FloatField("Lightmap Resolution", lightResolution);
-            EditorGUILayout.LabelField("Texels per Unit");
-            EditorGUILayout.EndHorizontal();
+            settings.lightResolution = DrawFloatField(settings.lightResolution, "Lightmap Resolution", 20);
 
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            lightPadding = EditorGUILayout.IntField("Lightmap Padding", lightPadding);
-            EditorGUILayout.LabelField("Texels");
-            EditorGUILayout.EndHorizontal();
+            settings.lightPadding = DrawIntField(settings.lightPadding, "Lightmap Padding", 20);
 
+            settings.lightSizeOption = DrawPopup(settings.lightSizeOption, lightSize, "Lightmap Size", 20);
 
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            string[] lightSize = { "32", "64", "128", "256", "512", "1024", "2048", "4096" };
-            lightSizeOption = EditorGUILayout.Popup("Lightmap Size", lightSizeOption, lightSize);
-            EditorGUILayout.EndHorizontal();
+            settings.compressLight = DrawToggle(settings.compressLight, "Compress Lightmaps", 20);
 
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            compressLight = EditorGUILayout.Toggle("Compress", compressLight);
-            EditorGUILayout.EndHorizontal();
+            settings.ambientOcclusion = DrawToggle(settings.ambientOcclusion, "Ambient Occlusion", 20);
 
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            ambientOcclusion = EditorGUILayout.Toggle("Compress", ambientOcclusion);
-            EditorGUILayout.EndHorizontal();
+            settings.directionalModeOption = DrawPopup(settings.directionalModeOption, directionalModeOptions, "Directional Mode", 20);
 
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            string[] directionalModeOPtions = { "Non-Directional", "Directional" };
-            directionalModeOption = EditorGUILayout.Popup("Directional Mode", directionalModeOption, directionalModeOPtions);
-            EditorGUILayout.EndHorizontal();
+            settings.indirectIntensity = DrawFloatSlider(settings.indirectIntensity, 0, 5, "Indirect Intensity", 20);
 
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            EditorGUILayout.LabelField("Indirect Intensity");
-            indirectIntensity = EditorGUILayout.Slider(indirectIntensity, 0, 5);
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            EditorGUILayout.LabelField("Albedo Boost");
-            albedoBoost = EditorGUILayout.Slider(albedoBoost, 1, 10);
-            EditorGUILayout.EndHorizontal();
+            settings.albedoBoost = DrawFloatSlider(settings.albedoBoost, 1, 10, "Albedo Boost", 20);
         }
         EditorGUILayout.EndVertical();
     }
 
     private void DrawCPUSettings()
     {
-        EditorGUILayout.BeginHorizontal();
-        GUILayout.Space(30);
-        usePrioritizeView = EditorGUILayout.Toggle("Prioritize View", usePrioritizeView);
-        EditorGUILayout.EndHorizontal();
+        settings.usePrioritizeView = DrawToggle(settings.usePrioritizeView, "Prioritize View", 30);
 
-        EditorGUILayout.BeginHorizontal();
-        GUILayout.Space(30);
-        amountOfDirectSamples = EditorGUILayout.IntField("Direct Samples", amountOfDirectSamples);
-        EditorGUILayout.EndHorizontal();
+        settings.amountOfDirectSamples = DrawIntField(settings.amountOfDirectSamples, "Direct Sample", 30);
 
-        EditorGUILayout.BeginHorizontal();
-        GUILayout.Space(30);
-        amountOfIndirectSamples = EditorGUILayout.IntField("Indirect Samples", amountOfIndirectSamples);
-        EditorGUILayout.EndHorizontal();
+        settings.amountOfIndirectSamples = DrawIntField(settings.amountOfIndirectSamples, "Indirect Samples", 30);
 
-        EditorGUILayout.BeginHorizontal();
-        string[] bouncesOptions = { "none", "1", "2", "3", "4" };
-        GUILayout.Space(30);
-        bouncesOption = EditorGUILayout.Popup("Bounces", bouncesOption, bouncesOptions);
-        EditorGUILayout.EndHorizontal();
+        settings.bouncesOption = DrawPopup(settings.bouncesOption, bouncesOptions, "Bounces", 30);
 
-        EditorGUILayout.BeginHorizontal();
-        string[] filteringOptions = { "none", "Auto", "Advanced" };
-        GUILayout.Space(30);
-        filteringOption = EditorGUILayout.Popup("Filtering", filteringOption, filteringOptions);
-        EditorGUILayout.EndHorizontal();
+        settings.filteringOption = DrawPopup(settings.filteringOption, filteringOptions, "Filtering", 30);
     }
 
     private void DrawMixedLighting()
     {
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-        EditorGUILayout.BeginHorizontal();
-        mixedLighting = EditorGUILayout.Foldout(mixedLighting, "Mixed Lighting");
-        EditorGUILayout.EndHorizontal();
+
+        mixedLighting = DrawFoldout(mixedLighting, "Mixed Lighting");
+
         if (mixedLighting)
         {
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            useBGI = EditorGUILayout.Toggle("Baked Global Illumination", useBGI);
-            EditorGUILayout.EndHorizontal();
+            settings.useBGI = DrawToggle(settings.useBGI, "Baked Global Illumination", 20);
 
-            EditorGUILayout.BeginHorizontal();
-            string[] lightingModeOptions = { "Baked Indirect", "Substractive", "Shadowmask" };
-            GUILayout.Space(20);
-            lightModeOption = EditorGUILayout.Popup("Lighting Mode", lightModeOption, lightingModeOptions);
-            EditorGUILayout.EndHorizontal();
+            settings.lightModeOption = DrawPopup(settings.lightModeOption, lightingModeOptions, "Lighting Mode", 20);
         }
         EditorGUILayout.EndVertical();
     }
@@ -186,15 +105,12 @@ public class AppleBufferSettings : IBufferInterface
     private void DrawRealtimeLighting()
     {
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-        EditorGUILayout.BeginHorizontal();
-        realtimeLighting = EditorGUILayout.Foldout(realtimeLighting, "Realtime Lighting");
-        EditorGUILayout.EndHorizontal();
+
+        realtimeLighting = DrawFoldout(realtimeLighting, "Realtime Lighting");
+
         if (realtimeLighting)
         {
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            useRGI = EditorGUILayout.Toggle("Realtime Global Illumination", useRGI);
-            EditorGUILayout.EndHorizontal();
+            settings.useRGI = DrawToggle(settings.useRGI, "Realtime Global Illumination", 20);
         }
         EditorGUILayout.EndVertical();
     }
@@ -202,20 +118,14 @@ public class AppleBufferSettings : IBufferInterface
     private void DrawEnvironmentSection()
     {
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-        EditorGUILayout.BeginHorizontal();
-        environmentFold = EditorGUILayout.Foldout(environmentFold, "Environment");
-        EditorGUILayout.EndHorizontal();
+
+        environmentFold = DrawFoldout(environmentFold, "Environment");
+
         if (environmentFold)
         {
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            mat = (Material)EditorGUILayout.ObjectField("SkyBox Material", mat, typeof(Material));
-            EditorGUILayout.EndHorizontal();
+            settings.material = DrawMaterialField(settings.material, "Skybox Material", 20);
 
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            mainLight = (Light)EditorGUILayout.ObjectField("Sun Source", mainLight, typeof(Light));
-            EditorGUILayout.EndHorizontal();
+            settings.mainLight = DrawLightField(settings.mainLight, "Sun Source", 20);
 
             DrawEnvironmentLighting();
 
@@ -226,62 +136,59 @@ public class AppleBufferSettings : IBufferInterface
 
     private void DrawEnvironmentReflection()
     {
-        EditorGUILayout.BeginHorizontal();
-        GUILayout.Space(20);
-        EditorGUILayout.LabelField("Environment Reflections");
-        EditorGUILayout.EndHorizontal();
+        DrawLabel("Environment Reflections", 20);
 
-        EditorGUILayout.BeginHorizontal();
-        string[] reflectionSourceOptions = { "Skybox", "Custom" };
-        GUILayout.Space(30);
-        skyReflectionOption = EditorGUILayout.Popup("Source", skyReflectionOption, reflectionSourceOptions);
-        EditorGUILayout.EndHorizontal();
+        settings.skyReflectionOption = DrawPopup(settings.skyReflectionOption, reflectionSourceOptions, "Source", 30);
 
-        EditorGUILayout.BeginHorizontal();
-        string[] resolutionOptions = { "16", "32", "64", "128", "256", "512", "1024", "2048" };
-        GUILayout.Space(30);
-        resolutionOption = EditorGUILayout.Popup("Resolution", resolutionOption, resolutionOptions);
-        EditorGUILayout.EndHorizontal();
+        settings.resolutionOption = DrawPopup(settings.resolutionOption, resolutionOptions, "Resolution", 30);
 
-        EditorGUILayout.BeginHorizontal();
-        string[] compressionOptions = { "Uncompressed", "Compressed", "Auto" };
-        GUILayout.Space(30);
-        compressionOption = EditorGUILayout.Popup("Compression", compressionOption, compressionOptions);
-        EditorGUILayout.EndHorizontal();
+        settings.compressionOption = DrawPopup(settings.compressionOption, compressionOptions, "Compression", 30);
 
-        EditorGUILayout.BeginHorizontal();
-        GUILayout.Space(30);
-        intensityReflection = EditorGUILayout.Slider("Intensity Multiple", intensityReflection, 0, 1);
-        EditorGUILayout.EndHorizontal();
+        settings.intensityReflection = DrawFloatSlider(settings.intensityReflection, 0, 1, "Intensity Multiplier", 30);
 
-        EditorGUILayout.BeginHorizontal();
-        GUILayout.Space(30);
-        bounces = EditorGUILayout.IntSlider("Bounces", bounces, 1, 5);
-        EditorGUILayout.EndHorizontal();
+        settings.bounces = DrawIntSlider(settings.bounces, 1, 5, "Bounces", 30);
     }
 
     private void DrawEnvironmentLighting()
     {
-        EditorGUILayout.BeginHorizontal();
-        GUILayout.Space(20);
-        EditorGUILayout.LabelField("Environment Lighting");
-        EditorGUILayout.EndHorizontal();
+        DrawLabel("Environment Lighting", 20);
 
-        EditorGUILayout.BeginHorizontal();
-        string[] skyLightOptions = { "Skybox", "Gradient", "Color" };
-        GUILayout.Space(30);
-        skyLightOption = EditorGUILayout.Popup("Source", skyLightOption, skyLightOptions);
-        EditorGUILayout.EndHorizontal();
+        settings.skyLightOption = DrawPopup(settings.skyLightOption, skyLightOptions, "Source", 30);
 
-        EditorGUILayout.BeginHorizontal();
-        GUILayout.Space(30);
-        intensityLight = EditorGUILayout.Slider("Intensity Multiple", intensityLight, 0, 8);
-        EditorGUILayout.EndHorizontal();
+        settings.intensityLight = DrawFloatSlider(settings.intensityLight, 0, 8, "Intensity Multiple", 30);
 
-        EditorGUILayout.BeginHorizontal();
-        string[] ambientOptions = { "Realtime", "Baked" };
-        GUILayout.Space(30);
-        ambientOption = EditorGUILayout.Popup("Ambient Mode", ambientOption, ambientOptions);
-        EditorGUILayout.EndHorizontal();
+        settings.ambientOption = DrawPopup(settings.ambientOption, ambientOptions, "Ambient Mode", 30);
     }
+}
+
+public struct AppleSettings
+{
+    public Material material;
+    public Light mainLight;
+    public int skyLightOption;
+    public int ambientOption;
+    public float intensityLight;
+    public int skyReflectionOption;
+    public int resolutionOption;
+    public int compressionOption;
+    public float intensityReflection;
+    public int bounces;
+    public bool useRGI;
+    public bool useBGI;
+    public int lightModeOption;
+    public int lightmapOption;
+    public bool usePrioritizeView;
+    public int amountOfDirectSamples;
+    public int amountOfIndirectSamples;
+    public int bouncesOption;
+    public int filteringOption;
+    public float indirectRes;
+    public float lightResolution;
+    public int lightPadding;
+    public int lightSizeOption;
+    public bool compressLight;
+    public bool ambientOcclusion;
+    public int directionalModeOption;
+    public float indirectIntensity;
+    public float albedoBoost;
 }

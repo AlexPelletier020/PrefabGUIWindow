@@ -1,9 +1,10 @@
 ﻿<Properties StartupConfiguration="{7D55FE85-BD7F-7ABF-C505-CB0F5B0A0B64}|">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Editor/BufferImportWindow/ImportTab.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Editor/BufferImportWindow/Buffers/Settings/AOBufferSettings.cs">
     <Files>
-      <File FileName="Assets/Editor/BufferImportWindow/WindowBuffer.cs" Line="23" Column="2" />
-      <File FileName="Assets/Editor/BufferImportWindow/ImportTab.cs" Line="89" Column="1" />
-      <File FileName="Assets/Editor/BufferObjectWindowScripts/BufferObjectWindow.cs" Line="350" Column="46" />
+      <File FileName="Assets/Editor/BufferImportWindow/Buffers/AbstractSerializedFields.cs" Line="2" Column="18" />
+      <File FileName="Assets/Editor/BufferImportWindow/Buffers/Settings/PhoneBufferSettings.cs" Line="60" Column="47" />
+      <File FileName="Assets/Editor/BufferImportWindow/Buffers/Settings/AOBufferSettings.cs" Line="141" Column="2" />
+      <File FileName="Assets/Editor/BufferImportWindow/Buffers/Settings/AppleBufferSettings.cs" Line="2" Column="30" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -13,9 +14,10 @@
               <Node name="Editor" expanded="True">
                 <Node name="BufferImportWindow" expanded="True">
                   <Node name="Buffers" expanded="True">
-                    <Node name="Settings" expanded="True" />
+                    <Node name="Settings" expanded="True">
+                      <Node name="AOBufferSettings.cs" selected="True" />
+                    </Node>
                   </Node>
-                  <Node name="ImportTab.cs" selected="True" />
                 </Node>
                 <Node name="BufferObjectWindowScripts" expanded="True" />
                 <Node name="ValidationWindowScripts" expanded="True" />
@@ -28,7 +30,7 @@
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="fd9866f5-6b9c-4ac6-8e7f-63ec369efd83" />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="146e41d9-79bb-4317-92c4-0f3091a2c32d" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>

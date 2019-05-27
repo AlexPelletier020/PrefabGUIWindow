@@ -3,32 +3,20 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public class AOBufferSettings : IBufferInterface
+public class AOBufferSettings : AbstractSerializedFields, IBufferInterface
 {
+    AOSettings settings;
+
     bool realtimeLighting = true;
     bool mixedLighting = true;
     bool lightmapping = true;
 
-    bool useRGI = true;
-
-    bool useBGI = true;
-    int lightModeOption = 2;
-
-    int lightmapOption = 1;
-    bool usePrioritizeView = true;
-    int amountOfDirectSamples = 32;
-    int amountOfIndirectSamples = 500;
-    int bouncesOption = 2;
-    int filteringOption = 1;
-    float indirectRes = 2f;
-    float lightResolution = 40;
-    int lightPadding = 2;
-    int lightSizeOption = 3;
-    bool compressLight = true;
-    bool ambientOcclusion = false;
-    int directionalModeOption = 1;
-    float indirectIntensity = 1;
-    float albedoBoost = 1;
+    readonly string[] lightingModeOptions = { "Baked Indirect", "Substractive", "Shadowmask" };
+    readonly string[] bouncesOptions = { "none", "1", "2", "3", "4" };
+    readonly string[] filteringOptions = { "none", "Auto", "Advanced" };
+    readonly string[] lightmapOptions = { "Enlighten", "Progressive CPU" };
+    readonly string[] directionalModeOptions = { "Non-Directional", "Directional" };
+    readonly string[] lightSize = { "32", "64", "128", "256", "512", "1024", "2048", "4096" };
 
     public string nameOfBuffer = "AO Buffer";
     public string version = "V.09";
@@ -45,126 +33,63 @@ public class AOBufferSettings : IBufferInterface
     private void DrawLightmapSettings()
     {
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-        EditorGUILayout.BeginHorizontal();
-        lightmapping = EditorGUILayout.Foldout(lightmapping, "Lightmapping Settings");
-        EditorGUILayout.EndHorizontal();
+
+        lightmapping = DrawFoldout(lightmapping, "Lightmap Settings");
+
         if (lightmapping)
         {
-            EditorGUILayout.BeginHorizontal();
-            string[] lightmapOptions = { "Enlighten", "Progressive CPU" };
-            GUILayout.Space(20);
-            lightmapOption = EditorGUILayout.Popup("Lightmapper", lightmapOption, lightmapOptions);
-            EditorGUILayout.EndHorizontal();
+            settings.lightmapOption = DrawPopup(settings.lightmapOption, lightmapOptions, "Lightmapper", 20);
 
-            if (lightmapOption.Equals(1))
+            if (settings.lightmapOption.Equals(1))
             {
                 DrawCPUSettings();
             }
 
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            indirectRes = EditorGUILayout.FloatField("Indirect Resolution", indirectRes);
-            EditorGUILayout.LabelField("Texels per Unit");
-            EditorGUILayout.EndHorizontal();
+            settings.indirectRes = DrawFloatField(settings.indirectRes, "Indirect Resolution", 20);
 
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            lightResolution = EditorGUILayout.FloatField("Lightmap Resolution", lightResolution);
-            EditorGUILayout.LabelField("Texels per Unit");
-            EditorGUILayout.EndHorizontal();
+            settings.lightResolution = DrawFloatField(settings.lightResolution, "Lightmap Resolution", 20);
 
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            lightPadding = EditorGUILayout.IntField("Lightmap Padding", lightPadding);
-            EditorGUILayout.LabelField("Texels");
-            EditorGUILayout.EndHorizontal();
+            settings.lightPadding = DrawIntField(settings.lightPadding, "Lightmap Padding", 20);
 
+            settings.lightSizeOption = DrawPopup(settings.lightSizeOption, lightSize, "Lightmap Size", 20);
 
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            string[] lightSize = { "32", "64", "128", "256", "512", "1024", "2048", "4096" };
-            lightSizeOption = EditorGUILayout.Popup("Lightmap Size", lightSizeOption, lightSize);
-            EditorGUILayout.EndHorizontal();
+            settings.compressLight = DrawToggle(settings.compressLight, "Compress Lightmaps", 20);
 
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            compressLight = EditorGUILayout.Toggle("Compress", compressLight);
-            EditorGUILayout.EndHorizontal();
+            settings.ambientOcclusion = DrawToggle(settings.ambientOcclusion, "Ambient Occlusion", 20);
 
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            ambientOcclusion = EditorGUILayout.Toggle("Compress", ambientOcclusion);
-            EditorGUILayout.EndHorizontal();
+            settings.directionalModeOption = DrawPopup(settings.directionalModeOption, directionalModeOptions, "Directional Mode", 20);
 
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            string[] directionalModeOPtions = { "Non-Directional", "Directional" };
-            directionalModeOption = EditorGUILayout.Popup("Directional Mode", directionalModeOption, directionalModeOPtions);
-            EditorGUILayout.EndHorizontal();
+            settings.indirectIntensity = DrawFloatSlider(settings.indirectIntensity, 0, 5, "Indirect Intensity", 20);
 
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            EditorGUILayout.LabelField("Indirect Intensity");
-            indirectIntensity = EditorGUILayout.Slider(indirectIntensity, 0, 5);
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            EditorGUILayout.LabelField("Albedo Boost");
-            albedoBoost = EditorGUILayout.Slider(albedoBoost, 1, 10);
-            EditorGUILayout.EndHorizontal();
+            settings.albedoBoost = DrawFloatSlider(settings.albedoBoost, 1, 10, "Albedo Boost", 20);
         }
         EditorGUILayout.EndVertical();
     }
 
     private void DrawCPUSettings()
     {
-        EditorGUILayout.BeginHorizontal();
-        GUILayout.Space(30);
-        usePrioritizeView = EditorGUILayout.Toggle("Prioritize View", usePrioritizeView);
-        EditorGUILayout.EndHorizontal();
+        settings.usePrioritizeView = DrawToggle(settings.usePrioritizeView, "Prioritize View", 30);
 
-        EditorGUILayout.BeginHorizontal();
-        GUILayout.Space(30);
-        amountOfDirectSamples = EditorGUILayout.IntField("Direct Samples", amountOfDirectSamples);
-        EditorGUILayout.EndHorizontal();
+        settings.amountOfDirectSamples = DrawIntField(settings.amountOfDirectSamples, "Direct Sample", 30);
 
-        EditorGUILayout.BeginHorizontal();
-        GUILayout.Space(30);
-        amountOfIndirectSamples = EditorGUILayout.IntField("Indirect Samples", amountOfIndirectSamples);
-        EditorGUILayout.EndHorizontal();
+        settings.amountOfIndirectSamples = DrawIntField(settings.amountOfIndirectSamples, "Indirect Samples", 30);
 
-        EditorGUILayout.BeginHorizontal();
-        string[] bouncesOptions = { "none", "1", "2", "3", "4" };
-        GUILayout.Space(30);
-        bouncesOption = EditorGUILayout.Popup("Bounces", bouncesOption, bouncesOptions);
-        EditorGUILayout.EndHorizontal();
+        settings.bouncesOption = DrawPopup(settings.bouncesOption, bouncesOptions, "Bounces", 30);
 
-        EditorGUILayout.BeginHorizontal();
-        string[] filteringOptions = { "none", "Auto", "Advanced" };
-        GUILayout.Space(30);
-        filteringOption = EditorGUILayout.Popup("Filtering", filteringOption, filteringOptions);
-        EditorGUILayout.EndHorizontal();
+        settings.filteringOption = DrawPopup(settings.filteringOption, filteringOptions, "Filtering", 30);
     }
 
     private void DrawMixedLighting()
     {
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-        EditorGUILayout.BeginHorizontal();
-        mixedLighting = EditorGUILayout.Foldout(mixedLighting, "Mixed Lighting");
-        EditorGUILayout.EndHorizontal();
+
+        mixedLighting = DrawFoldout(mixedLighting, "Mixed Lighting");
+
         if (mixedLighting)
         {
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            useBGI = EditorGUILayout.Toggle("Baked Global Illumination", useBGI);
-            EditorGUILayout.EndHorizontal();
+            settings.useBGI = DrawToggle(settings.useBGI, "Baked Global Illumination", 20);
 
-            EditorGUILayout.BeginHorizontal();
-            string[] lightingModeOptions = { "Baked Indirect", "Substractive", "Shadowmask" };
-            GUILayout.Space(20);
-            lightModeOption = EditorGUILayout.Popup("Lighting Mode", lightModeOption, lightingModeOptions);
-            EditorGUILayout.EndHorizontal();
+            settings.lightModeOption = DrawPopup(settings.lightModeOption, lightingModeOptions, "Lighting Mode", 20);
         }
         EditorGUILayout.EndVertical();
     }
@@ -172,16 +97,45 @@ public class AOBufferSettings : IBufferInterface
     private void DrawRealtimeLighting()
     {
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-        EditorGUILayout.BeginHorizontal();
-        realtimeLighting = EditorGUILayout.Foldout(realtimeLighting, "Realtime Lighting");
-        EditorGUILayout.EndHorizontal();
+
+        realtimeLighting = DrawFoldout(realtimeLighting, "Realtime Lighting");
+
         if (realtimeLighting)
         {
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            useRGI = EditorGUILayout.Toggle("Realtime Global Illumination", useRGI);
-            EditorGUILayout.EndHorizontal();
+            settings.useRGI = DrawToggle(settings.useRGI, "Realtime Global Illumination", 20);
         }
         EditorGUILayout.EndVertical();
     }
+}
+
+public struct AOSettings
+{
+    public Material material;
+    public Light mainLight;
+    public int skyLightOption;
+    public int ambientOption;
+    public float intensityLight;
+    public int skyReflectionOption;
+    public int resolutionOption;
+    public int compressionOption;
+    public float intensityReflection;
+    public int bounces;
+    public bool useRGI;
+    public bool useBGI;
+    public int lightModeOption;
+    public int lightmapOption;
+    public bool usePrioritizeView;
+    public int amountOfDirectSamples;
+    public int amountOfIndirectSamples;
+    public int bouncesOption;
+    public int filteringOption;
+    public float indirectRes;
+    public float lightResolution;
+    public int lightPadding;
+    public int lightSizeOption;
+    public bool compressLight;
+    public bool ambientOcclusion;
+    public int directionalModeOption;
+    public float indirectIntensity;
+    public float albedoBoost;
 }

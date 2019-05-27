@@ -1,22 +1,17 @@
-﻿
-
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
-public class PhoneBufferSettings : IBufferInterface
+public class PhoneBufferSettings : AbstractSerializedFields, IBufferInterface
 {
+    PhoneSettings settings;
+
     bool environmentFold = true;
 
-    Material mat = null;
-    Light mainLight = null;
-    int skyLightOption = 0;
-    int ambientOption = 0;
-    float intensityLight = 1;
-    int skyReflectionOption = 0;
-    int resolutionOption = 3;
-    int compressionOption = 2;
-    float intensityReflection = 1;
-    int bounces = 1;
+    readonly string[] skyLightOptions = { "Skybox", "Gradient", "Color" };
+    readonly string[] ambientOptions = { "Realtime", "Baked" };
+    readonly string[] reflectionSourceOptions = { "Skybox", "Custom" };
+    readonly string[] resolutionOptions = { "16", "32", "64", "128", "256", "512", "1024", "2048" };
+    readonly string[] compressionOptions = { "Uncompressed", "Compressed", "Auto" };
 
     public string nameOfBuffer = "Phone Buffer";
     public string version = "V.12";
@@ -29,20 +24,14 @@ public class PhoneBufferSettings : IBufferInterface
     private void DrawEnvironmentSection()
     {
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-        EditorGUILayout.BeginHorizontal();
-        environmentFold = EditorGUILayout.Foldout(environmentFold, "Environment");
-        EditorGUILayout.EndHorizontal();
+
+        environmentFold = DrawFoldout(environmentFold, "Environment");
+
         if (environmentFold)
         {
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            mat = (Material)EditorGUILayout.ObjectField("SkyBox Material", mat, typeof(Material));
-            EditorGUILayout.EndHorizontal();
+            settings.material = DrawMaterialField(settings.material, "Skybox Material", 20);
 
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(20);
-            mainLight = (Light)EditorGUILayout.ObjectField("Sun Source", mainLight, typeof(Light));
-            EditorGUILayout.EndHorizontal();
+            settings.mainLight = DrawLightField(settings.mainLight, "Sun Source", 20);
 
             DrawEnvironmentLighting();
 
@@ -53,62 +42,59 @@ public class PhoneBufferSettings : IBufferInterface
 
     private void DrawEnvironmentReflection()
     {
-        EditorGUILayout.BeginHorizontal();
-        GUILayout.Space(20);
-        EditorGUILayout.LabelField("Environment Reflections");
-        EditorGUILayout.EndHorizontal();
+        DrawLabel("Environment Reflections", 20);
 
-        EditorGUILayout.BeginHorizontal();
-        string[] reflectionSourceOptions = { "Skybox", "Custom" };
-        GUILayout.Space(30);
-        skyReflectionOption = EditorGUILayout.Popup("Source", skyReflectionOption, reflectionSourceOptions);
-        EditorGUILayout.EndHorizontal();
+        settings.skyReflectionOption = DrawPopup(settings.skyReflectionOption, reflectionSourceOptions, "Source", 30);
 
-        EditorGUILayout.BeginHorizontal();
-        string[] resolutionOptions = { "16", "32", "64", "128", "256", "512", "1024", "2048" };
-        GUILayout.Space(30);
-        resolutionOption = EditorGUILayout.Popup("Resolution", resolutionOption, resolutionOptions);
-        EditorGUILayout.EndHorizontal();
+        settings.resolutionOption = DrawPopup(settings.resolutionOption, resolutionOptions, "Resolution", 30);
 
-        EditorGUILayout.BeginHorizontal();
-        string[] compressionOptions = { "Uncompressed", "Compressed", "Auto" };
-        GUILayout.Space(30);
-        compressionOption = EditorGUILayout.Popup("Compression", compressionOption, compressionOptions);
-        EditorGUILayout.EndHorizontal();
+        settings.compressionOption = DrawPopup(settings.compressionOption, compressionOptions, "Compression", 30);
 
-        EditorGUILayout.BeginHorizontal();
-        GUILayout.Space(30);
-        intensityReflection = EditorGUILayout.Slider("Intensity Multiple", intensityReflection, 0, 1);
-        EditorGUILayout.EndHorizontal();
+        settings.intensityReflection = DrawFloatSlider(settings.intensityReflection, 0, 1, "Intensity Multiplier", 30);
 
-        EditorGUILayout.BeginHorizontal();
-        GUILayout.Space(30);
-        bounces = EditorGUILayout.IntSlider("Bounces", bounces, 1, 5);
-        EditorGUILayout.EndHorizontal();
+        settings.bounces = DrawIntSlider(settings.bounces, 1, 5, "Bounces", 30);
     }
 
     private void DrawEnvironmentLighting()
     {
-        EditorGUILayout.BeginHorizontal();
-        GUILayout.Space(20);
-        EditorGUILayout.LabelField("Environment Lighting");
-        EditorGUILayout.EndHorizontal();
+        DrawLabel("Environment Lighting", 20);
 
-        EditorGUILayout.BeginHorizontal();
-        string[] skyLightOptions = { "Skybox", "Gradient", "Color" };
-        GUILayout.Space(30);
-        skyLightOption = EditorGUILayout.Popup("Source", skyLightOption, skyLightOptions);
-        EditorGUILayout.EndHorizontal();
+        settings.skyLightOption = DrawPopup(settings.skyLightOption, skyLightOptions, "Source", 30);
 
-        EditorGUILayout.BeginHorizontal();
-        GUILayout.Space(30);
-        intensityLight = EditorGUILayout.Slider("Intensity Multiple", intensityLight, 0, 8);
-        EditorGUILayout.EndHorizontal();
+        settings.intensityLight = DrawFloatSlider(settings.intensityLight, 0, 8, "Intensity Multiple", 30);
 
-        EditorGUILayout.BeginHorizontal();
-        string[] ambientOptions = { "Realtime", "Baked" };
-        GUILayout.Space(30);
-        ambientOption = EditorGUILayout.Popup("Ambient Mode", ambientOption, ambientOptions);
-        EditorGUILayout.EndHorizontal();
+        settings.ambientOption = DrawPopup(settings.ambientOption, ambientOptions, "Ambient Mode", 30);
     }
+}
+
+public struct PhoneSettings
+{
+    public Material material;
+    public Light mainLight;
+    public int skyLightOption;
+    public int ambientOption;
+    public float intensityLight;
+    public int skyReflectionOption;
+    public int resolutionOption;
+    public int compressionOption;
+    public float intensityReflection;
+    public int bounces;
+    public bool useRGI;
+    public bool useBGI;
+    public int lightModeOption;
+    public int lightmapOption;
+    public bool usePrioritizeView;
+    public int amountOfDirectSamples;
+    public int amountOfIndirectSamples;
+    public int bouncesOption;
+    public int filteringOption;
+    public float indirectRes;
+    public float lightResolution;
+    public int lightPadding;
+    public int lightSizeOption;
+    public bool compressLight;
+    public bool ambientOcclusion;
+    public int directionalModeOption;
+    public float indirectIntensity;
+    public float albedoBoost;
 }
