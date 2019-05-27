@@ -424,3 +424,7 @@
 /Users/silverbackuser/Documents/Alex/SceneValidationTool/obj/Debug/Assembly-CSharp-Editor.dll
 /Users/silverbackuser/Documents/Alex/SceneValidationTool/obj/Debug/Assembly-CSharp-Editor.pdb
 /Users/silverbackuser/Documents/Alex/SceneValidationTool/Temp/bin/Debug/Sirenix.Serialization.AOTGenerated.dll
+/Users/silverbackuser/PrefabGUIWindow/SceneValidationTool/obj/Debug/Assembly-CSharp-Editor.csprojAssemblyReference.cache
+/Users/silverbackuser/PrefabGUIWindow/SceneValidationTool/obj/Debug/Assembly-CSharp-Editor.csproj.CoreCompileInputs.cache
+/Users/silverbackuser/PrefabGUIWindow/SceneValidationTool/obj/Debug/Assembly-CSharp-Editor.dll
+/Users/silverbackuser/PrefabGUIWindow/SceneValidationTool/obj/Debug/Assembly-CSharp-Editor.pdb

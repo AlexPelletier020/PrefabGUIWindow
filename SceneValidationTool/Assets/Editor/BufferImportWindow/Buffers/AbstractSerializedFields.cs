@@ -89,6 +89,5 @@ public abstract class AbstractSerializedFields : MonoBehaviour
         boolValue = EditorGUILayout.Toggle(label, boolValue);
         EditorGUILayout.EndHorizontal();
         return boolValue;
-
     }
 }

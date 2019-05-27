@@ -124,7 +124,7 @@ public class ImportTab
 
     private void LeftMouseClick(Event e)
     {
-        if (e.type == EventType.MouseDown && e.button == 0)                                             // Check for left mouse click if off the screen, or trying to unselect.
+        if (e?.type == EventType.MouseDown && e?.button == 0)                                             // Check for left mouse click if off the screen, or trying to unselect.
         {
             selected = -1;
             info = "";

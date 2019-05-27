@@ -4,10 +4,8 @@ using UnityEngine;
 
 public class ButtonLogic
 {
-    public void UpdateButton(GameObject obj)
-    {
-        Debug.Log(AssetDatabase.GetAssetPath(obj));    
-    }
+    public void UpdateButton(GameObject obj) => 
+        Debug.Log(AssetDatabase.GetAssetPath(obj));
 
     public void UpdateAllButton(List<GameObject> listOfUpdateObjects)
     {
@@ -17,8 +15,6 @@ public class ButtonLogic
         }
     }
 
-    public void RightClickLogic(GameObject obj)
-    {
+    public void RightClickLogic(GameObject obj) => 
         Debug.Log(AssetDatabase.GetAssetPath(obj) + "\n");
-    }
 }

@@ -754,3 +754,7 @@
 /Users/silverbackuser/PrefabGUIWindow/SceneValidationTool/obj/Debug/Assembly-CSharp-firstpass.csproj.CopyComplete
 /Users/silverbackuser/PrefabGUIWindow/SceneValidationTool/obj/Debug/Assembly-CSharp-firstpass.dll
 /Users/silverbackuser/PrefabGUIWindow/SceneValidationTool/obj/Debug/Assembly-CSharp-firstpass.pdb
+/Users/silverbackuser/PrefabGUIWindow/SceneValidationTool/Temp/bin/Debug/Boo.Lang.dll
+/Users/silverbackuser/PrefabGUIWindow/SceneValidationTool/Temp/bin/Debug/UnityEditor.UI.dll
+/Users/silverbackuser/PrefabGUIWindow/SceneValidationTool/Temp/bin/Debug/UnityEditor.UI.dll.mdb
+/Users/silverbackuser/PrefabGUIWindow/SceneValidationTool/Temp/bin/Debug/UnityEditor.UI.xml
