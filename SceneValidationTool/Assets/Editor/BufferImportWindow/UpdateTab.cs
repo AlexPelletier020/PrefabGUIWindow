@@ -11,6 +11,7 @@ public class UpdateTab
     private const string BLUE_SQUARE = "blueSquare";
     private const string PREFAB_ICON = "PrefabIcon";
     private const string FILE_EXTENSION = ".prefab";
+    private const string PREFAB_TEXTURE = "prefabTexture";
 
     public AutocompleteSearchField.AutocompleteSearchField searchField;                         // Create a searchField bar.
     public String searchInput = "";                                                             // Search input string variable used to define the search.
@@ -83,6 +84,8 @@ public class UpdateTab
     {
         DrawSearchBar();                                                                                // Draw the search bar using the AutocompleteSearchField class 
 
+        DrawImage();
+
         DrawScrollingSection();                                                                         // Draw the section of th window which has a scrolling portion
 
         DrawTextBox();                                                                                  // Draw the text box at the bottom of the list of prefabs to hold information
@@ -90,9 +93,20 @@ public class UpdateTab
         DrawUpdateButtons();                                                                            // Draw the update buttons.
     }
 
+    private void DrawImage()
+    {
+        EditorGUILayout.BeginHorizontal();
+        GUILayout.FlexibleSpace();
+        var rect = GUILayoutUtility.GetRect(250f, 125f, GUILayout.ExpandWidth(false));                  // Rectangle for the prefab icon.
+        var tex = Resources.Load(PREFAB_TEXTURE, typeof(Texture2D)) as Texture2D;                             // Add a texture of the Icon
+        EditorGUI.LabelField(rect, new GUIContent(tex));
+        GUILayout.FlexibleSpace();
+        EditorGUILayout.EndHorizontal();
+    }
+
     private void DrawSearchBar()
     {
-        EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);                                     // Put each Prefab in the list inside of it's own horizontal help box
+        EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);                                          // Put each Prefab in the list inside of it's own horizontal help box
         searchField.OnGUI();
         choice = DrawPopUpButton();
         EditorGUILayout.EndHorizontal();

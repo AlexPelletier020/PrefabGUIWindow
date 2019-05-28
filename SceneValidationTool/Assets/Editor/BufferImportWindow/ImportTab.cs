@@ -10,7 +10,8 @@ public class ImportTab
     readonly PhoneBufferSettings m_phoneBufferSettings = new PhoneBufferSettings();
 
     private const string BLUE_SQUARE = "blueSquare";
-    private const string GEAR_ICON = "gearIcon"; 
+    private const string GEAR_ICON = "gearIcon";
+    private const string BUFFERING_TEXTURE = "bufferingTexture";
 
     static string info = "";
     static readonly string text = "Hello World ";
@@ -18,7 +19,7 @@ public class ImportTab
     static int selected = -1;
     string bufferName = "";
 
-    int window = 0;
+    public int window = 0;
 
     public void Draw()
     {
@@ -113,6 +114,8 @@ public class ImportTab
     {
         var e = Event.current;
 
+        DrawImage();
+
         DrawScrollBox();
 
         DrawTextField();
@@ -120,6 +123,17 @@ public class ImportTab
         DrawAddButton();
 
         LeftMouseClick(e);
+    }
+
+    private void DrawImage()
+    {
+        EditorGUILayout.BeginHorizontal();
+        GUILayout.FlexibleSpace();
+        var rect = GUILayoutUtility.GetRect(250f, 125f, GUILayout.ExpandWidth(false));                  // Rectangle for the prefab icon.
+        var tex = Resources.Load(BUFFERING_TEXTURE, typeof(Texture2D)) as Texture2D;                             // Add a texture of the Icon
+        EditorGUI.LabelField(rect, new GUIContent(tex));
+        GUILayout.FlexibleSpace();
+        EditorGUILayout.EndHorizontal();
     }
 
     private void LeftMouseClick(Event e)

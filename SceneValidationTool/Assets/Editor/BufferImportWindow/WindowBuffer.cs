@@ -61,4 +61,20 @@ public class WindowBuffer : EditorWindow
             Init();
         }
     }
+
+    [MenuItem("Assets/Buffer/Import Buffer", priority = 1)]                                         // Functionality for right click in the project window.
+    private static void ImportBufferMenu()                                                                   // This will add the name of the prefab to the search field.
+    {
+        SetTabValue(0);
+        importTab.window = 0;
+        Init();
+    }
+
+    [MenuItem("Assets/Import Buffer", priority = 20)]                                         // Functionality for right click in the project window.
+    private static void ImportBuffer()                                                                   // This will add the name of the prefab to the search field.
+    {
+        SetTabValue(0);
+        importTab.window = 0;
+        Init();
+    }
 }
