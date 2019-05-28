@@ -11,7 +11,7 @@ public class ImportTab
 
     private const string BLUE_SQUARE = "blueSquare";
     private const string GEAR_ICON = "gearIcon";
-    private const string BUFFERING_TEXTURE = "bufferingTexture";
+    private const int MAX_BOTTOM_SPACE = 3;
 
     static string info = "";
     static readonly string text = "Hello World ";
@@ -94,7 +94,7 @@ public class ImportTab
         }
         GUILayout.FlexibleSpace();
 
-        EditorGUILayout.LabelField(bufferName, FontStyle());                         //********** Find a way to grab the name of the buffer for the title
+        EditorGUILayout.LabelField(bufferName, FontStyle());                         
 
         GUIStyle FontStyle()
         {
@@ -114,26 +114,15 @@ public class ImportTab
     {
         var e = Event.current;
 
-        DrawImage();
-
         DrawScrollBox();
 
         DrawTextField();
 
-        DrawAddButton();
+        DrawButtons();
+
+        GUILayout.Space(MAX_BOTTOM_SPACE);
 
         LeftMouseClick(e);
-    }
-
-    private void DrawImage()
-    {
-        EditorGUILayout.BeginHorizontal();
-        GUILayout.FlexibleSpace();
-        var rect = GUILayoutUtility.GetRect(250f, 125f, GUILayout.ExpandWidth(false));                  // Rectangle for the prefab icon.
-        var tex = Resources.Load(BUFFERING_TEXTURE, typeof(Texture2D)) as Texture2D;                             // Add a texture of the Icon
-        EditorGUI.LabelField(rect, new GUIContent(tex));
-        GUILayout.FlexibleSpace();
-        EditorGUILayout.EndHorizontal();
     }
 
     private void LeftMouseClick(Event e)
@@ -154,7 +143,7 @@ public class ImportTab
         {
             EditorGUILayout.LabelField(info, WordWrap());
 
-            GUIStyle WordWrap()                                                               // Style for sections not selected
+            GUIStyle WordWrap()                                                                                 
             {
                 GUIStyle s = new GUIStyle
                 {
@@ -167,17 +156,24 @@ public class ImportTab
                     return s;
                 }
 
-                s.normal.textColor = Color.white;                                                           // Set text color to white when not selected
+                s.normal.textColor = Color.white;                                                               // Set text color to white when not selected
 
                 return s;
             }
         }
     }
 
-    private void DrawAddButton()
+    private void DrawButtons()
     {
         EditorGUILayout.BeginHorizontal();
-        if (GUILayout.Button("+"))                                                                      // Add a button at the bottom of the window that displays Update All, and will be used to Update every Prefab
+        GUILayout.FlexibleSpace();
+        if (GUILayout.Button("Create", GUILayout.MinWidth(100)))
+        {
+            CreateNewBuffer m_createNewBuffer = ScriptableObject.CreateInstance<CreateNewBuffer>();
+            m_createNewBuffer.Init();
+        }
+        GUILayout.FlexibleSpace();
+        if (GUILayout.Button("Import", GUILayout.MinWidth(100)))                                                                         // Add a button at the bottom of the window that displays Update All, and will be used to Update every Prefab
         {
             string path = EditorUtility.OpenFilePanel("Overwrite with png", "", "png");
             if (path.Length != 0)
@@ -185,12 +181,13 @@ public class ImportTab
                 var fileContent = File.ReadAllBytes(path);
             }
         }
+        GUILayout.FlexibleSpace();
         EditorGUILayout.EndHorizontal();
     }
 
     private void DrawScrollBox()
     {
-        var scrollControlID = GUIUtility.GetControlID(FocusType.Passive);                               // Add Scrolling to the window
+        var scrollControlID = GUIUtility.GetControlID(FocusType.Passive);                                       // Add Scrolling to the window
         var scrollState = GetScrollState(scrollControlID);
 
         using (var scrollView = new GUILayout.ScrollViewScope(scrollState.scrollPosition))              // Scrolling section of the window.
@@ -199,7 +196,7 @@ public class ImportTab
 
             DrawTextArea(0, m_buffer.nameOfBuffer, m_buffer.version);
 
-            DrawTextArea(1, m_aoBufferSettings.nameOfBuffer, "\t" + m_aoBufferSettings.version);
+            DrawTextArea(1, m_aoBufferSettings.nameOfBuffer, m_aoBufferSettings.version);
 
             DrawTextArea(2, m_phoneBufferSettings.nameOfBuffer, m_phoneBufferSettings.version);
 
@@ -268,9 +265,9 @@ public class ImportTab
 
     private void DrawSelected(int count, string name, string version)
     {
-        if (GUILayout.Button(name + "\t\t" + version, GetBtnStyleSelected()))
+        if (GUILayout.Button("  " + name, GetBtnStyleSelected()))
         {
-            info = "Once I have a list of the different things, I can change this text.";
+            info = "Once I have a list of the different things, I can change this text.\t" + version;
 
             selected = count;
         }
@@ -293,11 +290,11 @@ public class ImportTab
 
     private void DrawNotSelected(int count, string name, string version)
     {
-        if (GUILayout.Button(name + "\t\t" + version, GetBtnStyleNotSelected()))
+        if (GUILayout.Button("  " + name, GetBtnStyleNotSelected()))
         {
             selected = count;
 
-            info = "Once I have a list of the different things, I can change this text.";
+            info = "Once I have a list of the different things, I can change this text.\t" + version;
         }
 
         GUIStyle GetBtnStyleNotSelected()                                                               // Style for sections not selected

@@ -1,21 +1,24 @@
 ﻿<Properties StartupConfiguration="{7D55FE85-BD7F-7ABF-C505-CB0F5B0A0B64}|">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Editor/BufferImportWindow/WindowBuffer.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/BlahBuffer/Apple_Bob.cs">
     <Files>
-      <File FileName="Assets/Editor/BufferImportWindow/ImportTab.cs" Line="17" Column="37" />
-      <File FileName="Assets/Editor/BufferImportWindow/UpdateTab.cs" Line="275" Column="43" />
-      <File FileName="Assets/Editor/BufferImportWindow/WindowBuffer.cs" Line="50" Column="42" />
+      <File FileName="Assets/Editor/BufferImportWindow/CreateNewBuffer.cs" Line="111" Column="69" />
+      <File FileName="Assets/Editor/BufferImportWindow/BufferScript.txt" Line="5" Column="26" />
+      <File FileName="Assets/BlahBuffer/Apple_Bob.cs" Line="8" Column="5" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="SceneValidationTool" expanded="True">
             <Node name="Assets" expanded="True">
+              <Node name="BlahBuffer" expanded="True">
+                <Node name="Apple_Bob.cs" selected="True" />
+              </Node>
               <Node name="Editor" expanded="True">
                 <Node name="BufferImportWindow" expanded="True">
-                  <Node name="WindowBuffer.cs" selected="True" />
+                  <Node name="Buffers" expanded="True">
+                    <Node name="Settings" expanded="True" />
+                  </Node>
                 </Node>
-                <Node name="BufferObjectWindowScripts" expanded="True" />
-                <Node name="ValidationWindowScripts" expanded="True" />
               </Node>
             </Node>
           </Node>

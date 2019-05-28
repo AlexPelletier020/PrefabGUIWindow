@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-public abstract class AbstractSerializedFields : MonoBehaviour
+public abstract class AbstractSerializedFields
 {
     public float DrawFloatField(float floatValue, string label, int spacePixel)
     {
@@ -19,6 +19,15 @@ public abstract class AbstractSerializedFields : MonoBehaviour
         intValue = EditorGUILayout.IntField(label, intValue);
         EditorGUILayout.EndHorizontal();
         return intValue;
+    }
+
+    public string DrawTextField(string stringValue, string label, int spacePixel)
+    {
+        EditorGUILayout.BeginHorizontal();
+        GUILayout.Space(spacePixel);
+        stringValue = EditorGUILayout.TextField(label, stringValue);
+        EditorGUILayout.EndHorizontal();
+        return stringValue;
     }
 
     public void DrawLabel(string label, int spacePixel)

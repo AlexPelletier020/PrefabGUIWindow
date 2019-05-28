@@ -11,7 +11,7 @@ public class UpdateTab
     private const string BLUE_SQUARE = "blueSquare";
     private const string PREFAB_ICON = "PrefabIcon";
     private const string FILE_EXTENSION = ".prefab";
-    private const string PREFAB_TEXTURE = "prefabTexture";
+    private const int MAX_BOTTOM_SPACE = 3;
 
     public AutocompleteSearchField.AutocompleteSearchField searchField;                         // Create a searchField bar.
     public String searchInput = "";                                                             // Search input string variable used to define the search.
@@ -26,10 +26,9 @@ public class UpdateTab
     public void Draw()
     {
         OnEnable();
-
         OnGUI();
     }
-
+        
     public void OnEnable()
     {
         if (searchField == null)
@@ -55,15 +54,10 @@ public class UpdateTab
     void OnGUI()                                                                                        // This is where all the GUI elements for the window is located for the window
     {
         var e = Event.current;                                                                          // Get Key events from the user including mouse keys
-
         CheckForRightClick(e);                                                                          // Check right click
-
         listOfUpdateObjects.Clear();                                                                    // Clear the list being drawn so it's not repeated.
-
         prefabList.PopulateList(searchInput, choice);                                                   // Populate the list inside the ListOfPrefabs class
-
         DrawEntireUI();                                                                                 // This is the header method for drawing the Window
-
         LeftMouseClick(e);                                                                              // Check for mouse left click.
     }
 
@@ -72,10 +66,8 @@ public class UpdateTab
         if (e?.type == EventType.MouseDown && e?.button == 1)
         {
             GenericMenu menu = new GenericMenu();
-
             menu.AddItem(new GUIContent("Get File Path:"), false, RightClick);                          // Add menu item to right click menu, which calls the method YourCallBack.
             menu.ShowAsContext();
-
             e.Use();
         }
     }
@@ -83,25 +75,10 @@ public class UpdateTab
     private void DrawEntireUI()                                                                         // Main UI header method to draw the UI for the window
     {
         DrawSearchBar();                                                                                // Draw the search bar using the AutocompleteSearchField class 
-
-        DrawImage();
-
         DrawScrollingSection();                                                                         // Draw the section of th window which has a scrolling portion
-
         DrawTextBox();                                                                                  // Draw the text box at the bottom of the list of prefabs to hold information
-
         DrawUpdateButtons();                                                                            // Draw the update buttons.
-    }
-
-    private void DrawImage()
-    {
-        EditorGUILayout.BeginHorizontal();
-        GUILayout.FlexibleSpace();
-        var rect = GUILayoutUtility.GetRect(250f, 125f, GUILayout.ExpandWidth(false));                  // Rectangle for the prefab icon.
-        var tex = Resources.Load(PREFAB_TEXTURE, typeof(Texture2D)) as Texture2D;                             // Add a texture of the Icon
-        EditorGUI.LabelField(rect, new GUIContent(tex));
-        GUILayout.FlexibleSpace();
-        EditorGUILayout.EndHorizontal();
+        GUILayout.Space(MAX_BOTTOM_SPACE);
     }
 
     private void DrawSearchBar()
@@ -307,7 +284,7 @@ public class UpdateTab
 
     private void DrawUpdateButtons()
     {
-        using (new GUILayout.HorizontalScope(EditorStyles.helpBox))                                     // Put each Prefab in the list inside of it's own horizontal help box
+        using (new GUILayout.HorizontalScope())                                                          // Put each Prefab in the list inside of it's own horizontal help box
         {
             DrawButtons();
         }
