@@ -22,7 +22,7 @@ public class BufferObjectWindow : EditorWindow
     private readonly ListOfPrefabs prefabList = new ListOfPrefabs();                                             // Object linked to the list of prefabs.
     private readonly ButtonLogic buttonLogic = new ButtonLogic();
 
-    [MenuItem("Buffered/Update Buffer Objects")]
+    //[MenuItem("Buffered/Update Buffer Objects")]
     public static void Init()                                                                                  //Initialize the window creation for Editor Window
     {
         var window = GetWindow<BufferObjectWindow>();                                                   // Create a window variable

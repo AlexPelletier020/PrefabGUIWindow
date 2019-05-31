@@ -60,7 +60,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\BlahBuffer\Apple_Bob.cs" />
     <Compile Include="Assets\Helper\Hierarchy.cs" />
     <Compile Include="Assets\Helper\PlayableDirectorExtended.cs" />
     <Compile Include="Assets\Helper\SceneHelper.cs" />

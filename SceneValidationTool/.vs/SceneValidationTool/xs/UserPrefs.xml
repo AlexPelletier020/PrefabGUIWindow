@@ -1,24 +1,28 @@
 ﻿<Properties StartupConfiguration="{7D55FE85-BD7F-7ABF-C505-CB0F5B0A0B64}|">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/BlahBuffer/Apple_Bob.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Editor/BufferImportWindow/AddNewProperty.cs">
     <Files>
-      <File FileName="Assets/Editor/BufferImportWindow/CreateNewBuffer.cs" Line="111" Column="69" />
-      <File FileName="Assets/Editor/BufferImportWindow/BufferScript.txt" Line="5" Column="26" />
-      <File FileName="Assets/BlahBuffer/Apple_Bob.cs" Line="8" Column="5" />
+      <File FileName="Assets/Editor/BufferImportWindow/CreateNewBuffer.cs" Line="147" Column="92" />
+      <File FileName="Assets/Editor/BufferImportWindow/AddNewProperty.cs" Line="89" Column="24" />
+      <File FileName="Assets/Editor/BufferImportWindow/ImportTab.cs" Line="276" Column="41" />
+      <File FileName="Assets/Editor/BufferImportWindow/PropertyClass.cs" Line="16" Column="26" />
+      <File FileName="Assets/Editor/BufferImportWindow/BufferScript.txt" Line="9" Column="5" />
+      <File FileName="Assets/Editor/BufferObjectWindowScripts/BufferObjectWindow.cs" Line="25" Column="7" />
+      <File FileName="Assets/Editor/BufferImportWindow/UpdateTab.cs" Line="108" Column="86" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="SceneValidationTool" expanded="True">
             <Node name="Assets" expanded="True">
-              <Node name="BlahBuffer" expanded="True">
-                <Node name="Apple_Bob.cs" selected="True" />
-              </Node>
+              <Node name="BlahBuffer" expanded="True" />
               <Node name="Editor" expanded="True">
                 <Node name="BufferImportWindow" expanded="True">
                   <Node name="Buffers" expanded="True">
                     <Node name="Settings" expanded="True" />
                   </Node>
+                  <Node name="AddNewProperty.cs" selected="True" />
                 </Node>
+                <Node name="BufferObjectWindowScripts" expanded="True" />
               </Node>
             </Node>
           </Node>
@@ -30,7 +34,9 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="146e41d9-79bb-4317-92c4-0f3091a2c32d" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="/Users/silverbackuser/PrefabGUIWindow/SceneValidationTool/Assets/BlahBuffer/Apple_Bob.cs" relfile="Assets/BlahBuffer/Apple_Bob.cs" line="7" column="1" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MultiItemStartupConfigurations />
 </Properties>

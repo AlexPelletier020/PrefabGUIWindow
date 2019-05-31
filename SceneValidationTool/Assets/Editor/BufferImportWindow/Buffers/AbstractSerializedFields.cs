@@ -3,6 +3,8 @@ using UnityEngine;
 
 public abstract class AbstractSerializedFields
 {
+    // Class which holds the GUI draw methods for the setting interfaces.
+
     public float DrawFloatField(float floatValue, string label, int spacePixel)
     {
         EditorGUILayout.BeginHorizontal();
@@ -69,7 +71,7 @@ public abstract class AbstractSerializedFields
     {
         EditorGUILayout.BeginHorizontal();
         GUILayout.Space(spacePixel);
-        mat = (Material)EditorGUILayout.ObjectField(label, mat, typeof(Material));
+        mat = (Material)EditorGUILayout.ObjectField(label, mat, typeof(Material), true);
         EditorGUILayout.EndHorizontal();
         return mat;
     }
@@ -78,7 +80,7 @@ public abstract class AbstractSerializedFields
     {
         EditorGUILayout.BeginHorizontal();
         GUILayout.Space(spacePixel);
-        light = (Light)EditorGUILayout.ObjectField(label, light, typeof(Light));
+        light = (Light)EditorGUILayout.ObjectField(label, light, typeof(Light), true);
         EditorGUILayout.EndHorizontal();
         return light;
     }

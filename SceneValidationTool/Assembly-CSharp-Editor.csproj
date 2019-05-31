@@ -60,6 +60,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Editor\BufferImportWindow\AddNewProperty.cs" />
     <Compile Include="Assets\Editor\BufferImportWindow\Buffers\AbstractSerializedFields.cs" />
     <Compile Include="Assets\Editor\BufferImportWindow\Buffers\IBufferInterface.cs" />
     <Compile Include="Assets\Editor\BufferImportWindow\Buffers\Settings\AOBufferSettings.cs" />
@@ -67,6 +68,7 @@
     <Compile Include="Assets\Editor\BufferImportWindow\Buffers\Settings\PhoneBufferSettings.cs" />
     <Compile Include="Assets\Editor\BufferImportWindow\CreateNewBuffer.cs" />
     <Compile Include="Assets\Editor\BufferImportWindow\ImportTab.cs" />
+    <Compile Include="Assets\Editor\BufferImportWindow\PropertyClass.cs" />
     <Compile Include="Assets\Editor\BufferImportWindow\UpdateTab.cs" />
     <Compile Include="Assets\Editor\BufferImportWindow\WindowBuffer.cs" />
     <Compile Include="Assets\Editor\BufferObjectWindowScripts\AutocompleteSearchField.cs" />
@@ -91,6 +93,7 @@
     <Compile Include="Assets\Editor\ValidationWindowScripts\Validations\OceanValidation.cs" />
     <Compile Include="Assets\Editor\ValidationWindowScripts\Validations\PlayerValidation.cs" />
     <Compile Include="Assets\Editor\ValidationWindowScripts\ValidationWindow.cs" />
+    <None Include="Assets\Editor\BufferImportWindow\Buffers\Settings\PropertyFile.txt" />
     <None Include="Assets\Editor\BufferImportWindow\BufferScript.txt" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>/Users/silverbackuser/PrefabGUIWindow/SceneValidationTool/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
